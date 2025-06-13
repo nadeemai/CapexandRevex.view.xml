@@ -1,0 +1,562 @@
+ <mvc:View
+controllerName="com.mmapprovalhub.approvalhub.controller.CapexandRevex"
+    displayBlock="true"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:uxap="sap.uxap"
+    xmlns:upload="sap.m.upload"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    xmlns:unified="sap.ui.unified"
+    xmlns:layout="sap.ui.layout"
+    xmlns:m="sap.m"
+>
+  <Page
+       id="CapexandRevexFormpage"
+       class="custom-scope"
+        title="Capex &amp; Revex"
+        showNavButton="true"
+        navButtonPress="onDashboardui"
+    >
+        <content>
+            <uxap:ObjectPageLayout
+                id="ObjectPageLayout"
+                showTitleInHeaderContent="false"
+                upperCaseAnchorBar="false"
+                showHeaderContent="true"
+                showFooter="true"
+               
+            >
+                <uxap:headerTitle>
+                    <uxap:ObjectPageDynamicHeaderTitle id="objectPageDynamicHeaderTitle">
+                        <uxap:actions>
+                        <HBox class="customhead">
+                        <HBox id="reqIdHeaderTxt" class="fontbold">
+                                      <Text id="inputRequestID" text="Reference Number : FY-2024-3850" width="100%" />
+ 
+                        </HBox>
+                        <HBox id="headerButton">
+                            <Button
+                                id="createInterlineSaveBtn"
+                                icon="sap-icon://save"
+                                text="{i18n>Save}"
+                                visible="true"
+                                type="Accept"
+                                press="onSave"
+                            />
+                            <Button
+                                id="createInterlineSubmitBtn"
+                                icon="sap-icon://accept"
+                                text="{i18n>Submit}"
+                                visible="true"
+                                type="Accept"
+                                press="onSubmit"
+                            />
+                            </HBox>
+                        </HBox>
+                        </uxap:actions>
+                    </uxap:ObjectPageDynamicHeaderTitle>
+                </uxap:headerTitle>
+ 
+                <uxap:headerContent>
+                    <FlexBox
+                        id="responsiveFlex"
+                        wrap="Wrap"
+                        direction="Row"
+                        justifyContent="SpaceBetween"
+                              class="customHeaderPadding sapUiSmallMarginBottom"
+                        fitContainer="true"
+                    >
+                        <VBox
+                            id="headercontentVboxFirst"
+                            width="30%"
+                            class="sapUiSmallMargin"
+                        >
+                            <!-- <ObjectStatus
+                                id="RequesterToken_Label"
+                                title="{i18n>XFLD_RequesterToken/Name}"
+                                text="50002151-PRIYATHAM "
+                                state="None"
+                            /> -->
+                            <Label id="RequesterToken_Label" text="{i18n>XFLD_RequesterToken/Name}:" class="noBoldLabel"/>
+                            <Input id="RequesterTokeninput" value="50002151-PRIYATHAM" width="100%" editable="false"/>
+                           
+                        </VBox>
+ 
+                        <VBox
+                            id="headercontentVboxSecond"
+                            width="30%"
+                            class="sapUiSmallMargin"
+                        >
+                            <!-- <ObjectStatus
+                               id="DateId"
+                                title="{i18n>XFLD_Date}"
+                                text="02-08-2023"
+                                state="None"
+                            /> -->
+                            <Label id="DateId" text="{i18n>XFLD_Date}:" class="noBoldLabel"/>
+                            <Input id="DateInputId" value="02-08-2023" width="100%" editable="false"/>
+                           
+                        </VBox>
+ 
+                        <VBox
+                            id="headercontentVboxThird"
+                            width="30%"
+                            class="sapUiSmallMargin"
+                        >
+                           <!-- <ObjectStatus
+                                id="Department_ID"
+                                title="{i18n>XFLD_Department}"
+                                text="Finance"
+                                state="None"
+                            /> -->
+                            <Label id="Department_ID" text="{i18n>XFLD_Department}:" class="noBoldLabel"/>
+                            <Input id="DepartmentInput_ID" value="Finance" width="100%" editable="false"/>
+                          
+                        </VBox>
+                    </FlexBox>
+                </uxap:headerContent>
+
+        
+                <uxap:sections>
+                   
+                    <uxap:ObjectPageSection
+                        titleUppercase="false"
+                        id="paymentdetails"
+                        title="{i18n>XCOL_paymentdetails}"
+                        showTitle="false"
+                        class="custom-section-spacing"
+                    >
+                        <uxap:subSections>
+                            <uxap:ObjectPageSubSection
+                                id="paymentdetailsId"
+                                title="{i18n>XCOL_paymentdetails}"
+                                titleUppercase="false"
+                            >
+                                <VBox
+                                    id="SVbox2"
+                                    class="sapUiSmallMargin SRFForm"
+                                >
+                                    <f:SimpleForm
+                                        id="SSimpleFormToolbar3"
+                                        editable="true"
+                                        layout="ColumnLayout"
+                                        labelSpanXL="12"
+                                        labelSpanL="12"
+                                        labelSpanM="12"
+                                        columnsXL="2"
+                                        columnsL="2"
+                                        columnsM="1"
+                                        adjustLabelSpan="false"
+                                    >
+                                       
+                                        <f:content>
+                                         <!-- <core:Title
+                                                text=""
+                                                class="remove-space"
+                                            /> -->
+                                            <Label
+                                                id="PaymentOptionId"
+                                                text="{i18n>XFLD_PaymentOption}"
+                                                required="true"
+                                            />
+                                            <ComboBox
+                                                id="PaymentOption"
+                                                selectedKey=""
+                                                change="onhandlePaymentOptionChange"
+                                                selectionChange="onPaymentOptionChange"
+                                                placeholder="Select Payment Option"
+                                            >
+                                                <items>
+                                                    <core:Item
+                                                        text="Advanced Payment"
+                                                        key="Advanced Payment"
+                                                    />
+                                                    <core:Item
+                                                        text="Payment Option2"
+                                                        key="Payment Option2"
+                                                    />
+                                                    <core:Item
+                                                        text="Payment Option3"
+                                                        key="Payment Option3"
+                                                    />
+                                                    <core:Item
+                                                        text="Others"
+                                                        key="Others"
+                                                    />
+                                                </items>
+                                            </ComboBox>
+                                             <Label
+                                                id="PaymentTypeId"
+                                                text="{i18n>XFLD_PaymentType}"
+                                                required="true"
+                                            />
+                                             <ComboBox id="PaymentType_capex" selectionChange="onPaymenttypedaata"  placeholder="Select Payment Type"
+    items="{
+        path: 'PaymentTypeDataFetch>/results'
+    }">
+    <core:ListItem    key="{PaymentTypeDataFetch>description}"  text="{PaymentTypeDataFetch>description}" />
+</ComboBox>
+                                       
+                                             <Label
+                                                id="PONonPOId"
+                                                text="{i18n>XFLD_PO/NonPO}"
+                                                required="true"
+                                            />
+                                            <ComboBox
+                                                id="PONonPoid"
+                                                selectedKey=""
+                                                change="handleComboBoxChange"
+                                                selectionChange="onPaymentOptionChange"
+                                                  placeholder="Select Payment Option"
+                                            >
+                                                <items>
+                                                    <core:Item
+                                                        text="PO/Non PO1"
+                                                        key="PO/Non PO1"
+                                                    />
+                                                    <core:Item
+                                                        text="PO Based"
+                                                        key="PO Based"
+                                                    />
+                                                    <core:Item
+                                                        text="PO/Non PO3"
+                                                        key="PO/Non PO3"
+                                                    />
+                                                    <core:Item
+                                                        text="Others"
+                                                        key="Others"
+                                                    />
+                                                </items>
+                                            </ComboBox>
+                                             <Label
+                                                id="XFLD_AccountingDocumentNumber_label"
+                                                text="{i18n>XFLD_AccountingDocumentNumber}"
+                                                required="true"
+                                            />
+                                            <Input
+                                                id="AccountingDocumentNumberInput"
+                                                type="Text"
+                                                placeholder="Enter Accounting Document Number"
+                                            />
+                                            <Label
+                                                id="PaymentDateIdLabel"
+                                                text="{i18n>XFLD_PaymentDate}"
+                                                required="true"
+                                            />
+                                            <ComboBox
+                                                id="PaymentDateId"
+                                                selectedKey=""
+                                                change="handleComboBoxChange"
+                                                selectionChange="onPaymentOptionChange"
+                                                placeholder="Select Payment Date"
+                                            >
+                                                <items>
+                                                    <core:Item
+                                                        text="PaymentDate1"
+                                                        key="PaymentDate1"
+                                                    />
+                                                    <core:Item
+                                                        text="PaymentDate2"
+                                                        key="PaymentDate2"
+                                                    />
+                                                    <core:Item
+                                                        text="PaymentDate3"
+                                                        key="PaymentDate3"
+                                                    />
+                                                    <core:Item
+                                                        text="Others"
+                                                        key="Others"
+                                                    />
+                                                </items>
+                                            </ComboBox>
+                                            <!-- <core:Title
+                                                text=""
+                                                class="remove-space"
+                                            /> -->
+                                           
+                                             <Label
+                                                id="XFLD_POlabel"
+                                                text="{i18n>XFLD_PO}"
+                                            />
+                                            <Input
+                                                id="POInput"
+                                                type="Text"
+                                                placeholder="Enter PO"
+                                            />
+                                             <Label
+                                                id="VendorCodeid"
+                                                text="{i18n>XFLD_VendorCode}"
+                                                required="true"
+                                            />
+                                            <Input
+                                                id="VendorCodeInput"
+                                                type="Text"
+                                                placeholder="Enter Vendor Code"
+                                            />
+                                             <Label
+                                                id="VendorNameid"
+                                                text="{i18n>XFLD_VendorName}"
+                                                required="true"
+                                            />
+                                            <Input
+                                                id="VendorNameInput"
+                                                type="Text"
+                                                 placeholder="Enter Vendor Name"
+                                            />
+                                             <Label
+                                                id="InvoiceNumberid"
+                                                text="{i18n>XFLD_InvoiceNumber}"
+                                                required="true"
+                                            />
+                                            <Input
+                                                id="InvoiceNumberInput"
+                                                type="Text"
+                                                 placeholder="Enter Invoice/Proforma Number"
+                                            />
+
+                                        </f:content>
+                                    </f:SimpleForm>
+                                </VBox>
+                            </uxap:ObjectPageSubSection>
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
+                    <uxap:ObjectPageSection
+                        titleUppercase="false"
+                        id="costinformationId"
+                        title="{i18n>XCOL_costinformation}"
+                        showTitle="false"
+                        class="custom-section-spacing"
+                    >
+                        <uxap:subSections>
+                            <uxap:ObjectPageSubSection
+                                id="costinformationid"
+                                title="{i18n>XCOL_costinformation}"
+                                titleUppercase="false"
+                            >
+                                <VBox
+                                    id="SVbox3"
+                                    class="sapUiSmallMargin SRFForm"
+                                >
+                                    <f:SimpleForm
+                                        id="SSimpleFormToolbar4"
+                                        editable="true"
+                                        layout="ColumnLayout"
+                                        labelSpanXL="12"
+                                        labelSpanL="12"
+                                        labelSpanM="12"
+                                        columnsXL="2"
+                                        columnsL="2"
+                                        columnsM="1"
+                                        adjustLabelSpan="false"
+                                    >
+                                       
+                                        <f:content>
+                                            <!-- <core:Title
+                                                text=""
+                                                class="remove-space"
+                                            /> -->
+                                            <Label
+                                                id="CostCenterID"
+                                                text="{i18n>XFLD_CostCenter}"
+                                                required="true"
+                                            />
+                                            <Input
+                                                id="CostCenterInput"
+                                                type="Text"
+                                                 placeholder="Enter Cost Center"
+                                            />
+                                             <Label
+                                                id="WBSID"
+                                                text="{i18n>XFLD_WBS}"
+                                                required="true"
+                                            />
+                                            <Input
+                                                id="WBSInput"
+                                                type="Text"
+                                                 placeholder="Enter WBS"
+                                            />
+                                            <Label
+                                                id="BaseAmountID"
+                                                text="{i18n>XFLD_BaseAmount}"
+                                                required="true"
+                                            />
+                                            <Input
+                                                id="BaseAmountInput"
+                                                type="Text"
+                                                 placeholder="Enter Base Amount"
+                                            />
+                                            <Label
+                                                id="GSTID"
+                                                text="{i18n>XFLD_GST}"
+                                            />
+                                            <Input
+                                                id="GSTInput"
+                                                type="Text"
+                                                placeholder="Enter GST"
+                                            />
+                                             <!-- <core:Title
+                                                text=""
+                                                class="remove-space"
+                                            /> -->
+                                            <Label
+                                                id="TDSID"
+                                                text="{i18n>XFLD_TDS}"
+                                            />
+                                            <Input
+                                                id="TDSInput"
+                                                type="Text"
+                                                 placeholder="Enter TDS"
+                                            />
+                                            <Label
+                                                id="TotalAmountID"
+                                                text="{i18n>XFLD_TotalAmount}"
+                                            />
+                                            <Input
+                                                id="TotalAmountInput"
+                                                type="Text"
+                                                 placeholder="Enter Total Amount"
+                                            />
+                                             <Label
+                                                id="PaymentTermsLabel"
+                                                text="{i18n>XFLD_PaymentTerms}"
+                                                required="true"
+                                            />
+                                            <ComboBox id="PaymentTermsId" selectionChange="onPaymenttermsdatadaata"    placeholder="Select Payment Terms"
+    items="{
+        path: 'PaymentTermsDataFetch>/results'
+    }">
+    <core:ListItem    key="{PaymentTermsDataFetch>description}"  text="{PaymentTermsDataFetch>description}" />
+</ComboBox>
+                                          
+                                        </f:content>
+                                    </f:SimpleForm>
+                                </VBox>
+                            </uxap:ObjectPageSubSection>
+                             </uxap:subSections>
+                    </uxap:ObjectPageSection>
+                             <uxap:ObjectPageSection
+                        titleUppercase="false"
+                        id="approverid"
+                        title="{i18n>XCOL_approver}"
+                        showTitle="false"
+                        class="custom-section-spacing"
+                    >
+                        <uxap:subSections>
+                            <uxap:ObjectPageSubSection
+                                id="approverId"
+                                title="{i18n>XCOL_approver}"
+                                titleUppercase="false"
+                            >
+                                <VBox
+                                    id="SVbox21"
+                                    class="sapUiSmallMargin SRFForm"
+                                >
+                                    <f:SimpleForm
+                                        id="SSimpleFormToolbar31"
+                                        editable="true"
+                                         layout="ColumnLayout"
+                                        labelSpanXL="12"
+                                        labelSpanL="12"
+                                        labelSpanM="12"
+                                        columnsXL="2"
+                                        columnsL="2"
+                                        columnsM="1"
+                                        adjustLabelSpan="false"
+                                    >
+                                      
+                                        <f:content>
+                                        <!-- <core:Title
+                                                text=""
+                                                class="remove-space"
+                                            /> -->
+                                            <Label
+                                                id="PaymentOptionId1"
+                                                text="{i18n>XFLD_BuyerRequestor}"
+                                                required="true"
+                                            />
+                                             <!-- <SearchField width="100%" id="BuyerRequestorInput" search=".onSearch"
+                                              placeholder="Select Requestor" /> -->
+                                               <ComboBox
+                                                id="BuyerRequestorInput"
+                                                selectedKey=""
+                                                change="handleComboBoxChange"
+                                                selectionChange="onPaymentOptionChange"
+                                                 placeholder="Select Requestor"
+                                            >
+                                                <items>
+                                                    <core:Item
+                                                        text="BuyerRequestor1"
+                                                        key="BuyerRequestor1"
+                                                    />
+                                                    <core:Item
+                                                        text="BuyerRequestor2"
+                                                        key="BuyerRequestor2"
+                                                    />
+                                                    <core:Item
+                                                        text="BuyerRequestor3"
+                                                        key="BuyerRequestor3"
+                                                    />
+                                                    <core:Item
+                                                        text="Others"
+                                                        key="Others"
+                                                    />
+                                                </items>
+                                            </ComboBox>
+                                             <!-- <core:Title
+                                                class="remove-space"
+                                            /> -->
+                                            <Label
+                                                id="BuyerHODId"
+                                                text="{i18n>XFLD_BuyerHOD}"
+                                                required="true"
+                                            />
+                                            <!-- <SearchField width="100%" id="BuyerHODInput" search=".onSearch" 
+                                             placeholder="Select HOD"/> -->
+                                              <ComboBox
+                                                id="BuyerHODInput"
+                                                selectedKey=""
+                                                change="handleComboBoxChange"
+                                                selectionChange="onPaymentOptionChange"
+                                                 placeholder="Select HOD"
+                                            >
+                                                <items>
+                                                    <core:Item
+                                                        text="HOD1"
+                                                        key="HOD1"
+                                                    />
+                                                    <core:Item
+                                                        text="HOD2"
+                                                        key="HOD2"
+                                                    />
+                                                    <core:Item
+                                                        text="HOD3"
+                                                        key="HOD3"
+                                                    />
+                                                    <core:Item
+                                                        text="Others"
+                                                        key="Others"
+                                                    />
+                                                </items>
+                                            </ComboBox>
+                                           
+                                             
+
+                                        </f:content>
+                                    </f:SimpleForm>
+                                </VBox>
+                            </uxap:ObjectPageSubSection>
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
+              
+                    <!--=============== end ==================-->
+                
+
+                
+                </uxap:sections>
+            </uxap:ObjectPageLayout>
+        </content>
+       
+    </Page>
+</mvc:View>
