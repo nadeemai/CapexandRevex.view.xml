@@ -1,3 +1,246 @@
+UPDATED CODE 3
+
+sap.ui.define([
+    "sap/ui/core/mvc/Controller",
+    "sap/m/MessageToast",
+    "sap/m/MessageBox"
+], function (Controller, MessageToast, MessageBox) {
+    "use strict";
+
+    return Controller.extend("infraproject.controller.Infra", {
+        onInit: function () {
+            // Initialize the portalModel with data as shown in the image
+            var oPortalModel = new sap.ui.model.json.JSONModel({
+                reqNo: "REQ12345",
+                paymentOption: "Advance Payment",
+                paymentType: "Capex",
+                poNonPo: "po",
+                paymentDate: "2025-06-16", // Current date as per system (June 16, 2025)
+                accountingDocNumber: "ACC123456",
+                po: "PO789",
+                vendorCode: "VEND456",
+                costCenter: "CC123",
+                wbs: "WBS456",
+                totalAmount: "54000",
+                vendorName: "Sample Vendor",
+                invoiceNumber: "INV001",
+                baseAmount: "50000",
+                gst: "5000",
+                tds: "1000",
+                buyerRequester: "Requestor 1",
+                buyerHod: "HOD 1",
+                paymentTerms: "term1",
+                remarks: "Payment for infrastructure project"
+            });
+            this.getView().setModel(oPortalModel, "portalModel");
+
+            // Initialize the searchModel for Buyer Requester and Buyer HOD suggestions
+            var oSearchModel = new sap.ui.model.json.JSONModel({
+                requestors: [
+                    { name: "Requestor 1", key: "req1" },
+                    { name: "Requestor 2", key: "req2" }
+                ],
+                hods: [
+                    { name: "HOD 1", key: "hod1" },
+                    { name: "HOD 2", key: "hod2" }
+                ]
+            });
+            this.getView().setModel(oSearchModel, "searchModel");
+
+            // Initialize the viewenableddatacheck model
+            var oViewEnabledModel = new sap.ui.model.json.JSONModel({
+                enableRowActions: true
+            });
+            this.getView().setModel(oViewEnabledModel, "viewenableddatacheck");
+
+            // Initialize the fieldEnablement model
+            var oFieldEnablementModel = new sap.ui.model.json.JSONModel({
+                fieldsEnabled: true,
+                poEnabled: true
+            });
+            this.getView().setModel(oFieldEnablementModel, "fieldEnablement");
+
+            // Initial check for field enablement and label
+            this._updateFieldEnablement();
+        },
+
+        onNavBack: function () {
+            var oHistory = sap.ui.core.routing.History.getInstance();
+            var sPreviousHash = oHistory.getPreviousHash();
+
+            if (sPreviousHash !== undefined) {
+                window.history.go(-1);
+            } else {
+                var oRouter = this.getOwnerComponent().getRouter();
+                oRouter.navTo("RouteHome");
+            }
+        },
+
+        onPaymentOptionChange: function (oEvent) {
+            this._updateFieldEnablement();
+        },
+
+        onPoNonPoChange: function (oEvent) {
+            this._updateFieldEnablement();
+        },
+
+        _updateFieldEnablement: function () {
+            var oPortalModel = this.getView().getModel("portalModel");
+            var oFieldEnablementModel = this.getView().getModel("fieldEnablement");
+
+            var sPaymentOption = oPortalModel.getProperty("/paymentOption");
+            var sPoNonPo = oPortalModel.getProperty("/poNonPo");
+
+            // Disable GST, TDS, Total Amount, and Payment Terms if Payment Option is "Advance Payment" and PO/Non PO is "po"
+            var bFieldsEnabled = !(sPaymentOption === "Advance Payment" && sPoNonPo === "po");
+            oFieldEnablementModel.setProperty("/fieldsEnabled", bFieldsEnabled);
+
+            // If fields are disabled, clear their values
+            if (!bFieldsEnabled) {
+                oPortalModel.setProperty("/gst", "");
+                oPortalModel.setProperty("/tds", "");
+                oPortalModel.setProperty("/totalAmount", "");
+                oPortalModel.setProperty("/paymentTerms", "");
+            }
+
+            // Disable PO field if Payment Option is "Regular Payment" or "Advance Payment"
+            var bPoEnabled = !(sPaymentOption === "Regular Payment" || sPaymentOption === "Advance Payment");
+            oFieldEnablementModel.setProperty("/poEnabled", bPoEnabled);
+
+            // Clear PO field if disabled
+            if (!bPoEnabled) {
+                oPortalModel.setProperty("/po", "");
+            }
+        },
+
+        formatInvoiceLabel: function (sPaymentOption, sPoNonPo) {
+            // Change label to "Proforma Number" if Payment Option is "Advance Payment" and PO/Non PO is "po"
+            if (sPaymentOption === "Advance Payment" && sPoNonPo === "po") {
+                return "Proforma Number";
+            }
+            return "Invoice Number";
+        },
+
+        onSaveSanctionform: function () {
+            // Validate form before saving
+            if (this._validateForm()) {
+                MessageToast.show("Form saved as draft successfully");
+                // Add your save logic here (e.g., API call to save the form data)
+            }
+        },
+
+        onSubmitSanctionform: function () {
+            // Validate form before submitting
+            if (this._validateForm()) {
+                MessageBox.confirm("Are you sure you want to submit this form?", {
+                    title: "Confirm Submission",
+                    onClose: function (oAction) {
+                        if (oAction === MessageBox.Action.OK) {
+                            MessageToast.show("Form submitted successfully");
+                            this._resetForm();
+                        }
+                    }.bind(this)
+                });
+            }
+        },
+
+        onSuggestionItemSelectedBuyerRequester: function (oEvent) {
+            var oSelectedItem = oEvent.getParameter("selectedItem");
+            if (oSelectedItem) {
+                var sKey = oSelectedItem.getKey();
+                var sText = oSelectedItem.getText();
+                var oPortalModel = this.getView().getModel("portalModel");
+                oPortalModel.setProperty("/buyerRequester", sText);
+                oPortalModel.setProperty("/buyerRequesterKey", sKey);
+            }
+        },
+
+        onSuggestionItemSelectedBuyerHod: function (oEvent) {
+            var oSelectedItem = oEvent.getParameter("selectedItem");
+            if (oSelectedItem) {
+                var sKey = oSelectedItem.getKey();
+                var sText = oSelectedItem.getText();
+                var oPortalModel = this.getView().getModel("portalModel");
+                oPortalModel.setProperty("/buyerHod", sText);
+                oPortalModel.setProperty("/buyerHodKey", sKey);
+            }
+        },
+
+        _validateForm: function () {
+            var oModel = this.getView().getModel("portalModel");
+            var oData = oModel.getData();
+
+            var aRequiredFields = [
+                { field: "paymentOption", value: oData.paymentOption },
+                { field: "paymentType", value: oData.paymentType },
+                { field: "poNonPo", value: oData.poNonPo },
+                { field: "paymentDate", value: oData.paymentDate },
+                { field: "vendorName", value: oData.vendorName },
+                { field: "invoiceNumber", value: oData.invoiceNumber },
+                { field: "costCenter", value: oData.costCenter },
+                { field: "wbs", value: oData.wbs },
+                { field: "baseAmount", value: oData.baseAmount },
+                { field: "buyerRequester", value: oData.buyerRequester },
+                { field: "buyerHod", value: oData.buyerHod }
+            ];
+
+            // Only validate GST and TDS if they are enabled
+            var oFieldEnablementModel = this.getView().getModel("fieldEnablement");
+            var bFieldsEnabled = oFieldEnablementModel.getProperty("/fieldsEnabled");
+            if (bFieldsEnabled) {
+                aRequiredFields.push({ field: "gst", value: oData.gst });
+                aRequiredFields.push({ field: "tds", value: oData.tds });
+            }
+
+            var bIsValid = true;
+
+            aRequiredFields.forEach(function (oField) {
+                if (!oField.value || oField.value === "") {
+                    MessageToast.show(oField.field + " is a required field");
+                    bIsValid = false;
+                }
+            });
+
+            return bIsValid;
+        },
+
+        _resetForm: function () {
+            // Reset the form to initial state, keeping some default values
+            var oModel = this.getView().getModel("portalModel");
+            oModel.setData({
+                reqNo: "REQ12345",
+                paymentOption: "",
+                paymentType: "",
+                poNonPo: "",
+                paymentDate: "",
+                accountingDocNumber: "",
+                po: "",
+                vendorCode: "",
+                costCenter: "",
+                wbs: "",
+                totalAmount: "",
+                vendorName: "",
+                invoiceNumber: "",
+                baseAmount: "",
+                gst: "",
+                tds: "",
+                buyerRequester: "",
+                buyerHod: "",
+                buyerRequesterKey: "",
+                buyerHodKey: "",
+                paymentTerms: "",
+                remarks: ""
+            });
+
+            // Reset field enablement
+            var oFieldEnablementModel = this.getView().getModel("fieldEnablement");
+            oFieldEnablementModel.setProperty("/fieldsEnabled", true);
+            oFieldEnablementModel.setProperty("/poEnabled", true);
+        }
+    });
+});
+
+
 UPDATED CODE 2 
 
 sap.ui.define([
