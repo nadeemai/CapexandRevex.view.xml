@@ -7,137 +7,147 @@ UPDATED CODE 2
     xmlns:layout="sap.ui.layout"
     xmlns:form="sap.ui.layout.form"
     xmlns:uxap="sap.uxap"
-    controllerName="infraproject.controller.Infra"
-    displayBlock="true">
+    controllerName="infraproject.controller.Infra">
 
-    <Page id="IntegratedPaymentManagementPortalPage" 
-          title="INTEGRATED PAYMENT MANAGEMENT PORTAL" 
-          showNavButton="true" 
-          navButtonPress="onNavBack"
-          class="sapUiResponsivePadding--header sapUiResponsivePadding--content">
-
+    <Page id="IntegratedPaymentManagementPortalPage" title="INTEGRATED PAYMENT MANAGEMENT PORTAL" showNavButton="true" navButtonPress="onNavBack">
         <customData>
             <core:CustomData key="sap-ui-custom-style" value="css/IntegratedPaymentManagementPortal.css" />
         </customData>
 
-        <uxap:ObjectPageLayout id="ObjectPageLayoutPortal" 
-                              showTitleInHeaderContent="true" 
-                              upperCaseAnchorBar="false" 
-                              showHeaderContent="true" 
-                              showFooter="true">
-
-            <!-- Header Title Section -->
+        <uxap:ObjectPageLayout id="ObjectPageLayoutPortal" showTitleInHeaderContent="true" upperCaseAnchorBar="false" showHeaderContent="true" showFooter="true">
             <uxap:headerTitle>
                 <uxap:ObjectPageDynamicHeaderTitle id="ObjectPageDynamicHeaderTitle" class="customHeaderClass">
                     <uxap:actions>
-                        <HBox class="customHeaderContainer">
-                            <!-- <HBox class="requestNumberContainer">
-                                <Text id="inputRequestIDPortal"
-                                    class="requestNumberText"
-                                    text="Request Number : RP-P24-CAP-PO-0002" />
+                        <HBox class="customhead">
+                            <!-- <HBox>
+                                <Text id="inputRequestIDPortal" class="textfont" text="Request Number : {PortalModel>/reqNo}" width="100%" />
                             </HBox> -->
-                            <HBox id="ActionButtons" class="buttonContainer">
+                            <HBox id="ActionButtons" class="customButtonContainer">
                                 <Button
                                     id="SaveBtn"
-                                    text="Save"
-                                    type="Default"
-                                    class="customButtonSave"
-                                    press="onSaveForm" />
+                                    text="Save As Draft"
+                                    visible="{viewenableddatacheck>/enableRowActions}"
+                                    type="Accept"
+                                    press="onSaveSanctionform" />
                                 <Button
                                     id="SubmitBtn"
-                                    text="Submit"
+                                    text="{i18n>Submit}"
+                                    visible="{viewenableddatacheck>/enableRowActions}"
                                     type="Emphasized"
-                                    class="customButtonSubmit"
-                                    press="onSubmitForm" />
+                                    press="onSubmitSanctionform" />
                             </HBox>
                         </HBox>
                     </uxap:actions>
                 </uxap:ObjectPageDynamicHeaderTitle>
             </uxap:headerTitle>
 
-            <!-- Form Content Section -->
             <uxap:headerContent>
-                <VBox id="FormContainer" class="formContainer">
+                <VBox id="FormContainer" justifyContent="Start">
                     <form:SimpleForm
                         id="PortalForm"
                         editable="true"
                         layout="ColumnLayout"
-                        labelSpanXL="3"
-                        labelSpanL="3"
-                        labelSpanM="3"
-                        labelSpanS="12"
+                        labelSpanXL="12"
+                        labelSpanL="12"
+                        labelSpanM="12"
                         columnsXL="4"
                         columnsL="4"
                         columnsM="1"
                         adjustLabelSpan="false"
-                        class="paymentForm">
+                        class="sapUiSmallMarginBeginEnd customFormClass">
 
-                        <!-- Row 1 -->
-                        <Label text="Sequence Token Name" required="true" />
-                        <Input value="50003151 - PRIVATINAI TELAPRO.U" editable="false" />
+<form:content>
 
-                        <Label text="Device" required="true" />
-                        <Input value="TELAP" editable="false" />
+    <!-- Row 1 -->
+    <Label text="Requester Token/Name" required="true" />
+    <Input value="50002151 - PRIYATHAM TELAPROLU" editable="false" width="100%" />
 
-                        <Label text="Powered Type" required="true" />
-                        <Input value="FO Based" editable="false" />
+    <Label text="Department" required="true" />
+    <Input value="TEMP" editable="false" width="100%" />
 
-                        <Label text="Request Number" />
-                        <Input value="RP-P24-CAP-PO-0002" editable="false" />
+    <Label text="Date" required="true" />
+    <DatePicker value="2023-08-02" displayFormat="dd-MM-yyyy" valueFormat="yyyy-MM-dd" editable="false" width="100%" />
 
-                        <!-- Row 2 -->
-                        <Label text="Payment Options" required="true" />
-                        <Input value="Regular Payment" editable="false" />
+    <Label text="Request Number" required="true" />
+    <Input value="{portalModel>/reqNo}" editable="false" width="100%" />
 
-                        <Label text="Payment Status" required="true" />
-                        <Input value="FO Based" editable="false" />
+    <!-- Row 2 -->
+    <Label text="Payment Option" required="true" />
+    <ComboBox selectedKey="{portalModel>/paymentOption}" width="100%" placeholder="Select Payment Option">
+        <core:Item text="Advance Payment" key="Advance Payment" />
+        <core:Item text="Regular Payment" key="Regular Payment" />
+    </ComboBox>
 
-                        <Label text="Date" required="true" />
-                        <Input value="09-02-2023" editable="false" />
+    <Label text="Payment Type" required="true" />
+    <ComboBox selectedKey="{portalModel>/paymentType}" width="100%" placeholder="Select Payment Type">
+        <core:Item text="Capex" key="Capex" />
+        <core:Item text="Revex" key="Revex" />
+    </ComboBox>
 
-                        <Label text="PO/Non-PO" required="true" />
-                        <Input value="POWERED/FO" editable="false" />
+    <Label text="PO/Non PO" required="true" />
+    <ComboBox selectedKey="{portalModel>/poNonPo}" width="100%" placeholder="Select Payment Option">
+        <core:Item text="PO" key="po" />
+        <core:Item text="Non-PO" key="nonpo" />
+    </ComboBox>
 
-                        <!-- Row 3 -->
-                        <Label text="Average Performance Number" required="true" />
-                        <Input value="5115151515" editable="false" />
+    <!-- Row 3 -->
+    <Label text="Accounting Document Number" />
+    <Input value="{portalModel>/accountingDocNumber}" placeholder="Enter Accounting Document Number" width="100%" />
 
-                        <Label text="Total Amount" />
-                        <Input value="$0.00EUR" editable="false" />
+    <Label text="Payment Date" required="true" />
+    <DatePicker value="{portalModel>/paymentDate}" displayFormat="dd-MM-yyyy" valueFormat="yyyy-MM-dd" placeholder="Select Payment Date" width="100%" />
 
-                        <Label text="PQ" />
-                        <Input value="44151515" editable="false" />
+    <Label text="PO" />
+    <Input value="{portalModel>/po}" placeholder="Enter PO" width="100%" />
 
-                        <Label text="Total Amount" />
-                        <Input value="$0.00EUR" editable="false" />
+    <Label text="Vendor Code" />
+    <Input value="{portalModel>/vendorCode}" placeholder="Enter Vendor Code" width="100%" />
 
-                        <!-- Row 4 -->
-                        <Label text="Card Center" required="true" />
-                        <Input value="2000623" editable="false" />
+    <!-- Row 4 -->
+    <Label text="Cost Center" required="true" />
+    <Input value="{portalModel>/costCenter}" placeholder="Enter Cost Center" width="100%" />
 
-                        <Label text="Total Amount" />
-                        <Input value="$0.00EUR" editable="false" />
+    <Label text="WBS" required="true" />
+    <Input value="{portalModel>/wbs}" placeholder="Enter WBS" width="100%" />
 
-                        <Label text="Other Requests" />
-                        <Input value="50003151 - PRIVATINAI TELAPRO.U" editable="false" />
+    <Label text="Total Amount" />
+    <Input value="{portalModel>/totalAmount}" type="Number" placeholder="Enter Total Amount" width="100%" />
 
-                        <Label text="Device" />
-                        <Input value="TELAPROU" editable="false" />
+    <Label text="Vendor Name" required="true" />
+    <Input value="{portalModel>/vendorName}" placeholder="Enter Vendor Name" width="100%" />
 
-                        <!-- Row 5 -->
-                        <Label text="Powered/FO" />
-                        <Input value="FO Based" editable="false" />
+    <!-- Row 5 -->
+    <Label text="Invoice Number" required="true" />
+    <Input value="{portalModel>/invoiceNumber}" placeholder="Enter Invoice/Proforma Number" width="100%" />
 
-                        <Label text="Image Source" required="true" />
-                        <Input value="65151515" editable="false" />
+    <Label text="Base Amount" required="true" />
+    <Input value="{portalModel>/baseAmount}" type="Number" placeholder="Enter Base Amount" width="100%" />
 
-                        <Label text="GPX" />
-                        <Input value="48454515" editable="false" />
+    <Label text="GST" required="true"/>
+    <Input value="{portalModel>/gst}" type="Number" placeholder="Enter GST" width="100%" />
 
-                        <!-- Capex & Revex Request Section -->
-                        <!-- <Label text="Capex  Revex Request" />
-                        <Text text="RP-P24-CAP-PO-0002 is Saved" class="statusText" /> -->
+    <Label text="TDS" required="true"/>
+    <Input value="{portalModel>/tds}" type="Number" placeholder="Enter TDS" width="100%" />
 
+    <!-- Row 6 -->
+    <Label text="Buyer Requester" required="true" />
+    <ComboBox selectedKey="{portalModel>/buyerRequester}" width="100%" placeholder="Select Requestor">
+        <core:Item text="Requestor 1" key="req1" />
+        <core:Item text="Requestor 2" key="req2" />
+    </ComboBox>
+
+    <Label text="Buyer HOD" required="true" />
+    <ComboBox selectedKey="{portalModel>/buyerHod}" width="100%" placeholder="Select HOD">
+        <core:Item text="HOD 1" key="hod1" />
+        <core:Item text="HOD 2" key="hod2" />
+    </ComboBox>
+
+    <Label text="Payment Terms" />
+    <ComboBox selectedKey="{portalModel>/paymentTerms}" width="100%" placeholder="Select Payment Terms">
+        <core:Item text="Term 1" key="term1" />
+        <core:Item text="Term 2" key="term2" />
+    </ComboBox>
+</form:content>
                     </form:SimpleForm>
                 </VBox>
             </uxap:headerContent>
