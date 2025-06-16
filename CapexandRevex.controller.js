@@ -9,33 +9,49 @@ sap.ui.define([
 
     return Controller.extend("infraproject.controller.Infra", {
         onInit: function () {
-            // Initialize the model with default data
-            var oModel = new sap.ui.model.json.JSONModel({
-                requesterTokenName: "50002151 - PRIYATHAM TELAPROLU",
-                department: "TEMP",
-                date: "2023-08-02",
+            // Initialize the portalModel with data as shown in the image
+            var oPortalModel = new sap.ui.model.json.JSONModel({
                 reqNo: "REQ12345",
                 paymentOption: "Advance Payment",
                 paymentType: "Capex",
-                poNonPO: "po",
-                paymentDate: "2025-06-16", // Current date as per system
-                vendorName: "",
-                accountingDocNumber: "",
-                po: "",
-                vendorCode: "",
-                invoiceNumber: "",
-                costCenter: "",
-                wbs: "",
-                baseAmount: "",
-                gst: "",
-                tds: "",
-                totalAmount: "",
+                poNonPo: "po",
+                paymentDate: "2025-06-16", // Current date as per system (June 16, 2025)
+                accountingDocNumber: "ACC123456",
+                po: "PO789",
+                vendorCode: "VEND456",
+                costCenter: "CC123",
+                wbs: "WBS456",
+                totalAmount: "54000",
+                vendorName: "Sample Vendor",
+                invoiceNumber: "INV001",
+                baseAmount: "50000",
+                gst: "5000",
+                tds: "1000",
+                buyerRequester: "Requestor 1",
+                buyerHod: "HOD 1",
                 paymentTerms: "term1",
-                buyerHOD: "hod1",
-                buyerRequester: "req1",
-                remarks: ""
+                remarks: "Payment for infrastructure project"
             });
-            this.getView().setModel(oModel, "PortalModel");
+            this.getView().setModel(oPortalModel, "portalModel");
+
+            // Initialize the searchModel for Buyer Requester and Buyer HOD suggestions
+            var oSearchModel = new sap.ui.model.json.JSONModel({
+                requestors: [
+                    { name: "Requestor 1", key: "req1" },
+                    { name: "Requestor 2", key: "req2" }
+                ],
+                hods: [
+                    { name: "HOD 1", key: "hod1" },
+                    { name: "HOD 2", key: "hod2" }
+                ]
+            });
+            this.getView().setModel(oSearchModel, "searchModel");
+
+            // Initialize the viewenableddatacheck model
+            var oViewEnabledModel = new sap.ui.model.json.JSONModel({
+                enableRowActions: true
+            });
+            this.getView().setModel(oViewEnabledModel, "viewenableddatacheck");
         },
 
         onNavBack: function () {
@@ -50,15 +66,15 @@ sap.ui.define([
             }
         },
 
-        onSaveForm: function () {
+        onSaveSanctionform: function () {
             // Validate form before saving
             if (this._validateForm()) {
-                MessageToast.show("Form saved successfully");
-                // Add your save logic here
+                MessageToast.show("Form saved as draft successfully");
+                // Add your save logic here (e.g., API call to save the form data)
             }
         },
 
-        onSubmitForm: function () {
+        onSubmitSanctionform: function () {
             // Validate form before submitting
             if (this._validateForm()) {
                 MessageBox.confirm("Are you sure you want to submit this form?", {
@@ -73,24 +89,46 @@ sap.ui.define([
             }
         },
 
+        onSuggestionItemSelectedBuyerRequester: function (oEvent) {
+            var oSelectedItem = oEvent.getParameter("selectedItem");
+            if (oSelectedItem) {
+                var sKey = oSelectedItem.getKey();
+                var sText = oSelectedItem.getText();
+                var oPortalModel = this.getView().getModel("portalModel");
+                oPortalModel.setProperty("/buyerRequester", sText);
+                oPortalModel.setProperty("/buyerRequesterKey", sKey);
+            }
+        },
+
+        onSuggestionItemSelectedBuyerHod: function (oEvent) {
+            var oSelectedItem = oEvent.getParameter("selectedItem");
+            if (oSelectedItem) {
+                var sKey = oSelectedItem.getKey();
+                var sText = oSelectedItem.getText();
+                var oPortalModel = this.getView().getModel("portalModel");
+                oPortalModel.setProperty("/buyerHod", sText);
+                oPortalModel.setProperty("/buyerHodKey", sKey);
+            }
+        },
+
         _validateForm: function () {
-            var oModel = this.getView().getModel("PortalModel");
+            var oModel = this.getView().getModel("portalModel");
             var oData = oModel.getData();
 
             var aRequiredFields = [
-                { field: "requesterTokenName", value: oData.requesterTokenName },
-                { field: "department", value: oData.department },
                 { field: "paymentOption", value: oData.paymentOption },
                 { field: "paymentType", value: oData.paymentType },
-                { field: "poNonPO", value: oData.poNonPO },
+                { field: "poNonPo", value: oData.poNonPo },
                 { field: "paymentDate", value: oData.paymentDate },
                 { field: "vendorName", value: oData.vendorName },
                 { field: "invoiceNumber", value: oData.invoiceNumber },
                 { field: "costCenter", value: oData.costCenter },
                 { field: "wbs", value: oData.wbs },
                 { field: "baseAmount", value: oData.baseAmount },
-                { field: "buyerHOD", value: oData.buyerHOD },
-                { field: "buyerRequester", value: oData.buyerRequester }
+                { field: "gst", value: oData.gst },
+                { field: "tds", value: oData.tds },
+                { field: "buyerRequester", value: oData.buyerRequester },
+                { field: "buyerHod", value: oData.buyerHod }
             ];
 
             var bIsValid = true;
@@ -106,37 +144,35 @@ sap.ui.define([
         },
 
         _resetForm: function () {
-            // Reset the form to initial state
-            var oModel = this.getView().getModel("PortalModel");
+            // Reset the form to initial state, keeping some default values
+            var oModel = this.getView().getModel("portalModel");
             oModel.setData({
-                requesterTokenName: "50002151 - PRIYATHAM TELAPROLU",
-                department: "TEMP",
-                date: "2023-08-02",
                 reqNo: "REQ12345",
                 paymentOption: "",
                 paymentType: "",
-                poNonPO: "",
+                poNonPo: "",
                 paymentDate: "",
-                vendorName: "",
                 accountingDocNumber: "",
                 po: "",
                 vendorCode: "",
-                invoiceNumber: "",
                 costCenter: "",
                 wbs: "",
+                totalAmount: "",
+                vendorName: "",
+                invoiceNumber: "",
                 baseAmount: "",
                 gst: "",
                 tds: "",
-                totalAmount: "",
-                paymentTerms: "",
-                buyerHOD: "",
                 buyerRequester: "",
+                buyerHod: "",
+                buyerRequesterKey: "",
+                buyerHodKey: "",
+                paymentTerms: "",
                 remarks: ""
             });
         }
     });
 });
-
 UPDATED CODE
 
 sap.ui.define([
