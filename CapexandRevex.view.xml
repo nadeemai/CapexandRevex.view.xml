@@ -1,3 +1,150 @@
+UPDATED CODE 2
+
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:uxap="sap.uxap"
+    controllerName="infraproject.controller.Infra"
+    displayBlock="true">
+
+    <Page id="IntegratedPaymentManagementPortalPage" 
+          title="INTEGRATED PAYMENT MANAGEMENT PORTAL" 
+          showNavButton="true" 
+          navButtonPress="onNavBack"
+          class="sapUiResponsivePadding--header sapUiResponsivePadding--content">
+
+        <customData>
+            <core:CustomData key="sap-ui-custom-style" value="css/IntegratedPaymentManagementPortal.css" />
+        </customData>
+
+        <uxap:ObjectPageLayout id="ObjectPageLayoutPortal" 
+                              showTitleInHeaderContent="true" 
+                              upperCaseAnchorBar="false" 
+                              showHeaderContent="true" 
+                              showFooter="true">
+
+            <!-- Header Title Section -->
+            <uxap:headerTitle>
+                <uxap:ObjectPageDynamicHeaderTitle id="ObjectPageDynamicHeaderTitle" class="customHeaderClass">
+                    <uxap:actions>
+                        <HBox class="customHeaderContainer">
+                            <!-- <HBox class="requestNumberContainer">
+                                <Text id="inputRequestIDPortal"
+                                    class="requestNumberText"
+                                    text="Request Number : RP-P24-CAP-PO-0002" />
+                            </HBox> -->
+                            <HBox id="ActionButtons" class="buttonContainer">
+                                <Button
+                                    id="SaveBtn"
+                                    text="Save"
+                                    type="Default"
+                                    class="customButtonSave"
+                                    press="onSaveForm" />
+                                <Button
+                                    id="SubmitBtn"
+                                    text="Submit"
+                                    type="Emphasized"
+                                    class="customButtonSubmit"
+                                    press="onSubmitForm" />
+                            </HBox>
+                        </HBox>
+                    </uxap:actions>
+                </uxap:ObjectPageDynamicHeaderTitle>
+            </uxap:headerTitle>
+
+            <!-- Form Content Section -->
+            <uxap:headerContent>
+                <VBox id="FormContainer" class="formContainer">
+                    <form:SimpleForm
+                        id="PortalForm"
+                        editable="true"
+                        layout="ColumnLayout"
+                        labelSpanXL="3"
+                        labelSpanL="3"
+                        labelSpanM="3"
+                        labelSpanS="12"
+                        columnsXL="4"
+                        columnsL="4"
+                        columnsM="1"
+                        adjustLabelSpan="false"
+                        class="paymentForm">
+
+                        <!-- Row 1 -->
+                        <Label text="Sequence Token Name" required="true" />
+                        <Input value="50003151 - PRIVATINAI TELAPRO.U" editable="false" />
+
+                        <Label text="Device" required="true" />
+                        <Input value="TELAP" editable="false" />
+
+                        <Label text="Powered Type" required="true" />
+                        <Input value="FO Based" editable="false" />
+
+                        <Label text="Request Number" />
+                        <Input value="RP-P24-CAP-PO-0002" editable="false" />
+
+                        <!-- Row 2 -->
+                        <Label text="Payment Options" required="true" />
+                        <Input value="Regular Payment" editable="false" />
+
+                        <Label text="Payment Status" required="true" />
+                        <Input value="FO Based" editable="false" />
+
+                        <Label text="Date" required="true" />
+                        <Input value="09-02-2023" editable="false" />
+
+                        <Label text="PO/Non-PO" required="true" />
+                        <Input value="POWERED/FO" editable="false" />
+
+                        <!-- Row 3 -->
+                        <Label text="Average Performance Number" required="true" />
+                        <Input value="5115151515" editable="false" />
+
+                        <Label text="Total Amount" />
+                        <Input value="$0.00EUR" editable="false" />
+
+                        <Label text="PQ" />
+                        <Input value="44151515" editable="false" />
+
+                        <Label text="Total Amount" />
+                        <Input value="$0.00EUR" editable="false" />
+
+                        <!-- Row 4 -->
+                        <Label text="Card Center" required="true" />
+                        <Input value="2000623" editable="false" />
+
+                        <Label text="Total Amount" />
+                        <Input value="$0.00EUR" editable="false" />
+
+                        <Label text="Other Requests" />
+                        <Input value="50003151 - PRIVATINAI TELAPRO.U" editable="false" />
+
+                        <Label text="Device" />
+                        <Input value="TELAPROU" editable="false" />
+
+                        <!-- Row 5 -->
+                        <Label text="Powered/FO" />
+                        <Input value="FO Based" editable="false" />
+
+                        <Label text="Image Source" required="true" />
+                        <Input value="65151515" editable="false" />
+
+                        <Label text="GPX" />
+                        <Input value="48454515" editable="false" />
+
+                        <!-- Capex & Revex Request Section -->
+                        <!-- <Label text="Capex  Revex Request" />
+                        <Text text="RP-P24-CAP-PO-0002 is Saved" class="statusText" /> -->
+
+                    </form:SimpleForm>
+                </VBox>
+            </uxap:headerContent>
+        </uxap:ObjectPageLayout>
+    </Page>
+</mvc:View>
+
 UPDATED CODE 1
 
 <mvc:View
