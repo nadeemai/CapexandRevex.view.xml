@@ -1,3 +1,65 @@
+UPDATED CODE
+
+sap.ui.define([
+    "sap/ui/core/mvc/Controller",
+    "sap/m/MessageToast",
+    "sap/m/MessageBox"
+], function(Controller, MessageToast, MessageBox) {
+    "use strict";
+
+    return Controller.extend("infraproject.controller.Infra", {
+
+        onInit: function() {
+            // Initialize any required data or models
+        },
+
+        onNavBack: function() {
+            var oHistory = sap.ui.core.routing.History.getInstance();
+            var sPreviousHash = oHistory.getPreviousHash();
+
+            if (sPreviousHash !== undefined) {
+                window.history.go(-1);
+            } else {
+                var oRouter = this.getOwnerComponent().getRouter();
+                oRouter.navTo("RouteHome");
+            }
+        },
+
+        onSaveForm: function() {
+            // Validate form before saving
+            if (this._validateForm()) {
+                MessageToast.show("Form saved successfully");
+                // Add your save logic here
+            }
+        },
+
+        onSubmitForm: function() {
+            // Validate form before submitting
+            if (this._validateForm()) {
+                MessageBox.confirm("Are you sure you want to submit this form?", {
+                    title: "Confirm Submission",
+                    onClose: function(oAction) {
+                        if (oAction === MessageBox.Action.OK) {
+                            MessageToast.show("Form submitted successfully");
+                            // Add your submission logic here
+                        }
+                    }
+                });
+            }
+        },
+
+        _validateForm: function() {
+            // Since all fields are read-only in this implementation,
+            // validation is not strictly necessary
+            return true;
+        }
+    });
+});
+
+
+
+
+OLD CODE
 sap.ui.define([
     "sap/ui/core/mvc/Controller"
 ], (Controller) => {
