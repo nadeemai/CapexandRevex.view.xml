@@ -1,3 +1,175 @@
+UPDATE CODE 4
+
+<?xml version="1.0" encoding="UTF-8"?>
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:m="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:uxap="sap.uxap"
+    controllerName="infraproject.controller.Infra">
+
+    <m:Page id="IntegratedPaymentManagementPortalPage" title="INTEGRATED PAYMENT MANAGEMENT PORTAL" showNavButton="true" navButtonPress="onNavBack">
+        <uxap:ObjectPageLayout id="ObjectPageLayoutPortal" showTitleInHeaderContent="true" upperCaseAnchorBar="false" showHeaderContent="true" showFooter="true">
+            <uxap:headerTitle>
+                <uxap:ObjectPageDynamicHeaderTitle id="ObjectPageDynamicHeaderTitle" class="customHeaderClass">
+                    <uxap:actions>
+                        <m:HBox class="customhead">
+                            <m:HBox id="ActionButtons" class="customButtonContainer">
+                                <m:Button
+                                    id="SaveBtn"
+                                    text="Save As Draft"
+                                    visible="{viewenableddatacheck>/enableRowActions}"
+                                    type="Accept"
+                                    press="onSaveSanctionform" />
+                                <m:Button
+                                    id="SubmitBtn"
+                                    text="{i18n>Submit}"
+                                    visible="{viewenableddatacheck>/enableRowActions}"
+                                    type="Emphasized"
+                                    press="onSubmitSanctionform" />
+                            </m:HBox>
+                        </m:HBox>
+                    </uxap:actions>
+                </uxap:ObjectPageDynamicHeaderTitle>
+            </uxap:headerTitle>
+
+            <uxap:headerContent>
+                <m:VBox id="FormContainer" justifyContent="Start">
+                    <m:IconTabBar id="iconTabBar" expanded="true" class="sapUiSmallMarginBeginEnd">
+                        <!-- Tab 1: Payment Details (Existing Form) -->
+                        <m:items>
+                            <m:IconTabFilter text="Initiate" key="paymentDetails">
+                                <form:SimpleForm
+                                    id="PortalForm"
+                                    editable="true"
+                                    layout="ColumnLayout"
+                                    labelSpanXL="12"
+                                    labelSpanL="12"
+                                    labelSpanM="12"
+                                    columnsXL="4"
+                                    columnsL="4"
+                                    columnsM="1"
+                                    adjustLabelSpan="false"
+                                    class="sapUiSmallMarginBeginEnd customFormClass">
+
+                                    <form:content>
+                                        <!-- Row 1 -->
+                                        <m:Label text="Requester Token/Name" required="true" />
+                                        <m:Input value="50002151 - PRIYATHAM TELAPROLU" editable="false" width="100%" />
+
+                                        <m:Label text="PO/Non PO" required="true" />
+                                        <m:ComboBox selectedKey="{portalModel>/poNonPo}" width="100%" placeholder="Select Payment Option" change="onPoNonPoChange">
+                                            <core:Item text="PO" key="po" />
+                                            <core:Item text="Non-PO" key="nonpo" />
+                                        </m:ComboBox>
+
+                                        <m:Label text="WBS" required="true" />
+                                        <m:Input value="{portalModel>/wbs}" placeholder="Enter WBS" width="100%" enabled="{fieldEnablement>/fieldsEnabled}" />
+
+                                        <m:Label text="TDS" required="true" />
+                                        <m:Input value="{portalModel>/tds}" type="Number" placeholder="Enter TDS" width="100%" enabled="{fieldEnablement>/fieldsEnabled}" />
+
+                                        <!-- Row 2 -->
+                                        <m:Label text="Payment Option" required="true" />
+                                        <m:ComboBox selectedKey="{portalModel>/paymentOption}" width="100%" placeholder="Select Payment Option" change="onPaymentOptionChange">
+                                            <core:Item text="Advance Payment" key="Advance Payment" />
+                                            <core:Item text="Regular Payment" key="Regular Payment" />
+                                        </m:ComboBox>
+
+                                        <m:Label text="Payment Type" required="true" />
+                                        <m:ComboBox selectedKey="{portalModel>/paymentType}" width="100%" placeholder="Select Payment Type">
+                                            <core:Item text="Capex" key="Capex" />
+                                            <core:Item text="Revex" key="Revex" />
+                                        </m:ComboBox>
+
+                                        <m:Label text="Department" required="true" />
+                                        <m:Input value="TEMP" editable="false" width="100%" />
+
+                                        <!-- Row 3 -->
+                                        <m:Label text="Accounting Document Number" />
+                                        <m:Input value="{portalModel>/accountingDocNumber}" placeholder="Enter Accounting Document Number" width="100%" />
+
+                                        <m:Label text="Payment Date" required="true" />
+                                        <m:DatePicker value="{portalModel>/paymentDate}" displayFormat="dd-MM-yyyy" valueFormat="yyyy-MM-dd" placeholder="Select Payment Date" width="100%" />
+
+                                        <m:Label text="PO" />
+                                        <m:Input value="{portalModel>/po}" placeholder="Enter PO" width="100%" enabled="{fieldEnablement>/poEnabled}" />
+
+                                        <m:Label text="Vendor Code" />
+                                        <m:Input value="{portalModel>/vendorCode}" placeholder="Enter Vendor Code" width="100%" />
+
+                                        <!-- Row 4 -->
+                                        <m:Label text="Cost Center" required="true" />
+                                        <m:Input value="{portalModel>/costCenter}" placeholder="Enter Cost Center" width="100%" />
+
+                                        <m:Label text="Date" required="true" />
+                                        <m:DatePicker value="2023-08-02" displayFormat="dd-MM-yyyy" valueFormat="yyyy-MM-dd" editable="false" width="100%" />
+
+                                        <m:Label text="Total Amount" />
+                                        <m:Input value="{portalModel>/totalAmount}" type="Number" placeholder="Enter Total Amount" width="100%" enabled="{fieldEnablement>/fieldsEnabled}" />
+
+                                        <m:Label text="Vendor Name" required="true" />
+                                        <m:Input value="{portalModel>/vendorName}" placeholder="Enter Vendor Name" width="100%" />
+
+                                        <!-- Row 5 -->
+                                        <m:Label text="{parts: [{path: 'portalModel>/paymentOption'}, {path: 'portalModel>/poNonPo'}], formatter: '.formatInvoiceLabel'}" required="true" />
+                                        <m:Input value="{portalModel>/invoiceNumber}" placeholder="Enter Invoice/Proforma Number" width="100%" />
+
+                                        <m:Label text="Base Amount" required="true" />
+                                        <m:Input value="{portalModel>/baseAmount}" type="Number" placeholder="Enter Base Amount" width="100%" />
+
+                                        <m:Label text="GST" required="true" />
+                                        <m:Input value="{portalModel>/gst}" type="Number" placeholder="Enter GST" width="100%" enabled="{fieldEnablement>/fieldsEnabled}" />
+
+                                        <m:Label text="Request Number" required="true" />
+                                        <m:Input value="{portalModel>/reqNo}" editable="false" width="100%" />
+
+                                        <!-- Row 6 -->
+                                        <m:Label text="Buyer Requester" required="true" />
+                                        <m:ComboBox selectedKey="{portalModel>/buyerRequester}" width="100%" placeholder="Select Requestor" items="{searchModel>/requestors}" selectionChange="onSuggestionItemSelectedBuyerRequester">
+                                            <core:Item key="{searchModel>key}" text="{searchModel>name}" />
+                                        </m:ComboBox>
+
+                                        <m:Label text="Buyer HOD" required="true" />
+                                        <m:ComboBox selectedKey="{portalModel>/buyerHod}" width="100%" placeholder="Select HOD" items="{searchModel>/hods}" selectionChange="onSuggestionItemSelectedBuyerHod">
+                                            <core:Item key="{searchModel>key}" text="{searchModel>name}" />
+                                        </m:ComboBox>
+
+                                        <m:Label text="Payment Terms" />
+                                        <m:ComboBox selectedKey="{portalModel>/paymentTerms}" width="100%" placeholder="Select Payment Terms" enabled="{fieldEnablement>/fieldsEnabled}">
+                                            <core:Item text="Term 1" key="term1" />
+                                            <core:Item text="Term 2" key="term2" />
+                                        </m:ComboBox>
+                                    </form:content>
+                                </form:SimpleForm>
+                            </m:IconTabFilter>
+
+                            <!-- Tab 2: Additional Info -->
+                            <m:IconTabFilter text="Inbox"  key="additionalInfo">
+                                <m:VBox>
+                                    <!-- <m:Text text="This tab can contain additional information related to the payment, such as remarks or notes." class="sapUiSmallMargin"/> -->
+                                    <m:TextArea value="{portalModel>/remarks}" placeholder="Enter Remarks" width="100%" rows="5"/>
+                                </m:VBox>
+                            </m:IconTabFilter>
+
+                            <!-- Tab 3: Attachments -->
+                            <m:IconTabFilter text="Search" key="Search">
+                                <m:VBox>
+                                    <m:Text text="This tab can be used to upload or view attachments related to the payment request." class="sapUiSmallMargin"/>
+                                    <m:UploadCollection id="uploadCollection" multiple="true" uploadEnabled="true"/>
+                                </m:VBox>
+                            </m:IconTabFilter>
+                        </m:items>
+                    </m:IconTabBar>
+                </m:VBox>
+            </uxap:headerContent>
+        </uxap:ObjectPageLayout>
+    </m:Page>
+</mvc:View>
+
+
 UPDATED CODE 3
 
 <mvc:View
