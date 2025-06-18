@@ -88,6 +88,12 @@ UPDATED CSS
   background-color: #f9f9f9 !important;
 }
 
+.sapMIBar .sapMBtnInner:not(.sapMToggleBtnPressed):not(.sapMBtnEmphasized):not(.sapMBtnAccept):not(.sapMBtnAttention):not(.sapMBtnReject):not(.sapMBtnActive):not(.sapMBtnGhost), .sapUxAPObjectPageHeaderIdentifierActions .sapMBtnInner:not(.sapMToggleBtnPressed):not(.sapMBtnEmphasized):not(.sapMBtnAccept):not(.sapMBtnAttention):not(.sapMBtnReject):not(.sapMBtnActive):not(.sapMBtnGhost)
+ {
+    border-color: var(--sapButton_Lite_BorderColor);
+    background-color: white;
+}
+
 
 OLD CSS
 
