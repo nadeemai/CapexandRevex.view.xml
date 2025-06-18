@@ -1,3 +1,433 @@
+UPDATED CODE 5
+
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:uxap="sap.uxap"
+    xmlns:u="sap.ui.unified"
+    xmlns:suite="sap.suite.ui.commons"
+    controllerName="infraproject.controller.Infra">
+
+    <Page id="sanctionFDPage" 
+          class="custom-scope" 
+          title="SPECIAL SANCTION FD" 
+          showNavButton="true" 
+          navButtonPress="onDashboardui"
+         >
+        <uxap:ObjectPageLayout id="sanctionFDObjectPageLayout" 
+                              showTitleInHeaderContent="true" 
+                              upperCaseAnchorBar="false" 
+                              showHeaderContent="true" 
+                              showFooter="true">
+            <uxap:headerTitle>
+                <uxap:ObjectPageDynamicHeaderTitle id="sanctionFDHeaderTitle">
+                    <uxap:actions>
+                        <HBox class="customhead">
+                            <HBox>
+                                <Text id="refNumberText"
+                                    class="textfont"
+                                    text="Reference Number : {Requestservicemodel>/refNo}"
+                                    width="100%" />
+                            </HBox>
+                            <HBox id="actionButtonsContainer">
+                                <Button
+                                    id="saveDraftBtn"
+                                    text="Save As Draft"
+                                    visible="{viewenableddatacheck>/enableRowActions}"
+                                    type="Accept"
+                                    press="onSaveSanctionform"
+                                    ariaLabelledBy="saveDraftBtnLabel"/>
+                                <Button
+                                    id="submitBtn"
+                                    text="{i18n>submitButton}"
+                                    visible="{viewenableddatacheck>/enableRowActions}"
+                                    type="Emphasized"
+                                    press="onSubmitSanctionform"
+                                    ariaLabelledBy="submitBtnLabel"/>
+                            </HBox>
+                        </HBox>
+                    </uxap:actions>
+                </uxap:ObjectPageDynamicHeaderTitle>
+            </uxap:headerTitle>
+
+            <uxap:headerContent>
+                <VBox id="headerFormContainer">
+                    <form:SimpleForm
+                        id="sanctionFDHeaderForm"
+                        editable="true"
+                        layout="ColumnLayout"
+                        labelSpanXL="12"
+                        labelSpanL="12"
+                        labelSpanM="12"
+                        columnsXL="4"
+                        columnsL="4"
+                        columnsM="1"
+                        adjustLabelSpan="false"
+                        class="sapUiSmallMarginBeginEnd customFormClass">
+
+                        <form:content>
+                            <!-- Row 1 -->
+                            <Label text="Requester Token/Name" required="true" />
+                            <Input value="50002151 - PRIYATHAM TELAPROLU" editable="false" width="100%" />
+
+                            <Label text="PO/Non PO" required="true" />
+                            <ComboBox selectedKey="{portalModel>/poNonPo}" 
+                                     width="100%" 
+                                     placeholder="Select Payment Option" 
+                                     change="onPoNonPoChange" 
+                                     enabled="{fieldEnablement>/submitFieldsEnabled}">
+                                <core:Item text="PO" key="po" />
+                                <core:Item text="Non-PO" key="nonpo" />
+                            </ComboBox>
+
+                            <Label text="WBS" required="true" />
+                            <Input value="{portalModel>/wbs}" 
+                                  placeholder="Enter WBS" 
+                                  width="100%" 
+                                  enabled="{fieldEnablement>/fieldsEnabled}" />
+
+                            <Label text="TDS" required="true" />
+                            <Input value="{portalModel>/tds}" 
+                                  type="Number" 
+                                  placeholder="Enter TDS" 
+                                  width="100%" 
+                                  enabled="{fieldEnablement>/fieldsEnabled}" />
+
+                            <!-- Row 2 -->
+                            <Label text="Payment Option" required="true" />
+                            <ComboBox selectedKey="{portalModel>/paymentOption}" 
+                                      width="100%" 
+                                      placeholder="Select Payment Option" 
+                                      change="onPaymentOptionChange" 
+                                      enabled="{fieldEnablement>/submitFieldsEnabled}">
+                                <core:Item text="Advance Payment" key="Advance Payment" />
+                                <core:Item text="Regular Payment" key="Regular Payment" />
+                            </ComboBox>
+
+                            <Label text="Payment Type" required="true" />
+                            <ComboBox selectedKey="{portalModel>/paymentType}" 
+                                     width="100%" 
+                                     placeholder="Select Payment Type" 
+                                     enabled="{fieldEnablement>/submitFieldsEnabled}">
+                                <core:Item text="Capex" key="Capex" />
+                                <core:Item text="Revex" key="Revex" />
+                            </ComboBox>
+
+                            <Label text="Department" required="true" />
+                            <Input value="TEMP" editable="false" width="100%" />
+
+                            <!-- Row 3 -->
+                            <Label text="Accounting Document Number" />
+                            <Input value="{portalModel>/accountingDocNumber}" 
+                                  placeholder="Enter Accounting Document Number" 
+                                  width="100%" />
+
+                            <Label text="Payment Date" required="true" />
+                            <DatePicker value="{portalModel>/paymentDate}" 
+                                      displayFormat="dd-MM-yyyy" 
+                                      valueFormat="yyyy-MM-dd" 
+                                      placeholder="Select Payment Date" 
+                                      width="100%" />
+
+                            <Label text="PO" />
+                            <Input value="{portalModel>/po}" 
+                                  placeholder="Enter PO" 
+                                  width="100%" 
+                                  enabled="{fieldEnablement>/poEnabled}" />
+
+                            <Label text="Vendor Code" />
+                            <Input value="{portalModel>/vendorCode}" 
+                                  placeholder="Enter Vendor Code" 
+                                  width="100%" />
+
+                            <!-- Row 4 -->
+                            <Label text="Cost Center" required="true" />
+                            <Input value="{portalModel>/costCenter}" 
+                                  placeholder="Enter Cost Center" 
+                                  width="100%" />
+
+                            <Label text="Date" required="true" />
+                            <DatePicker value="2023-08-02" 
+                                        displayFormat="dd-MM-yyyy" 
+                                        valueFormat="yyyy-MM-dd" 
+                                        editable="false" 
+                                        width="100%" />
+
+                            <Label text="Total Amount" />
+                            <Input value="{portalModel>/totalAmount}" 
+                                  type="Number" 
+                                  placeholder="Enter Total Amount" 
+                                  width="100%" 
+                                  enabled="{fieldEnablement>/fieldsEnabled}" />
+
+                            <Label text="Vendor Name" required="true" />
+                            <Input value="{portalModel>/vendorName}" 
+                                  placeholder="Enter Vendor Name" 
+                                  width="100%" />
+
+                            <!-- Row 5 -->
+                            <Label text="{parts: [{path: 'portalModel>/paymentOption'}, {path: 'portalModel>/poNonPo'}], formatter: '.formatInvoiceLabel'}" 
+                                  required="true" />
+                            <Input value="{portalModel>/invoiceNumber}" 
+                                  placeholder="Enter Invoice/Proforma Number" 
+                                  width="100%" />
+
+                            <Label text="Base Amount" required="true" />
+                            <Input value="{portalModel>/baseAmount}" 
+                                  type="Number" 
+                                  placeholder="Enter Base Amount" 
+                                  width="100%" />
+
+                            <Label text="GST" required="true" />
+                            <Input value="{portalModel>/gst}" 
+                                  type="Number" 
+                                  placeholder="Enter GST" 
+                                  width="100%" 
+                                  enabled="{fieldEnablement>/fieldsEnabled}" />
+
+                            <Label text="Request Number" required="true" />
+                            <Input value="{portalModel>/reqNo}" 
+                                  editable="false" 
+                                  width="100%" />
+
+                            <!-- Row 6 -->
+                            <Label text="Buyer Requester" required="true" />
+                            <ComboBox selectedKey="{portalModel>/buyerRequester}" 
+                                     width="100%" 
+                                     placeholder="Select Requestor" 
+                                     items="{searchModel>/requestors}" 
+                                     selectionChange="onSuggestionItemSelectedBuyerRequester">
+                                <core:Item key="{searchModel>key}" text="{searchModel>name}" />
+                            </ComboBox>
+
+                            <Label text="Buyer HOD" required="true" />
+                            <ComboBox selectedKey="{portalModel>/buyerHod}" 
+                                     width="100%" 
+                                     placeholder="Select HOD" 
+                                     items="{searchModel>/hods}" 
+                                     selectionChange="onSuggestionItemSelectedBuyerHod">
+                                <core:Item key="{searchModel>key}" text="{searchModel>name}" />
+                            </ComboBox>
+
+                            <Label text="Payment Terms" />
+                            <ComboBox selectedKey="{portalModel>/paymentTerms}" 
+                                     width="100%" 
+                                     placeholder="Select Payment Terms" 
+                                     enabled="{fieldEnablement>/fieldsEnabled}">
+                                <core:Item text="Term 1" key="term1" />
+                                <core:Item text="Term 2" key="term2" />
+                            </ComboBox>
+                        </form:content>
+                    </form:SimpleForm>
+                </VBox>
+            </uxap:headerContent>
+            
+            <uxap:sections>
+                <!-- Justification Details Section -->
+                <uxap:ObjectPageSection title="Justification Details">
+                    <uxap:subSections>
+                        <uxap:ObjectPageSubSection>
+                            <VBox class="sapUiSmallMargin">
+                                <HBox width="100%" justifyContent="SpaceBetween" wrap="Wrap">
+                                    <VBox width="30%" class="sapUiSmallMargin">
+                                        <Label text="{i18n>Background/CurrentScenario}" class="redLabel" />
+                                        <TextArea
+                                            editable="{viewenableddatacheck>/enableRowActions}"
+                                            value="{Requestservicemodel>/ssfdDtl/background}"
+                                            showExceededText="true"
+                                            maxLength="1000"
+                                            width="100%"
+                                            valueState="None"
+                                            valueLiveUpdate="true"
+                                            liveChange="handleLiveChange"
+                                            rows="4"
+                                            placeholder="Enter Background/Current Scenario" />
+                                    </VBox>
+                                    <VBox width="30%" class="sapUiSmallMargin">
+                                        <Label text="{i18n>Proposal/Justification}" class="redLabel" />
+                                        <TextArea
+                                            editable="{viewenableddatacheck>/enableRowActions}"
+                                            value="{Requestservicemodel>/ssfdDtl/justification}"
+                                            showExceededText="true"
+                                            maxLength="1000"
+                                            width="100%"
+                                            valueState="None"
+                                            valueLiveUpdate="true"
+                                            liveChange="handleLiveChange"
+                                            rows="4"
+                                            placeholder="Enter Proposal/Justification" />
+                                    </VBox>
+                                    <VBox width="30%" class="sapUiSmallMargin">
+                                        <Label text="{i18n>Deliverables}" class="redLabel" />
+                                        <TextArea
+                                            editable="{viewenableddatacheck>/enableRowActions}"
+                                            value="{Requestservicemodel>/ssfdDtl/deliverables}"
+                                            showExceededText="true"
+                                            maxLength="1000"
+                                            width="100%"
+                                            valueState="None"
+                                            valueLiveUpdate="true"
+                                            liveChange="handleLiveChange"
+                                            rows="4"
+                                            placeholder="Enter Deliverables" />
+                                    </VBox>
+                                </HBox>
+                            </VBox>
+                        </uxap:ObjectPageSubSection>
+                    </uxap:subSections>
+                </uxap:ObjectPageSection>
+
+                <!-- Budget Detail Section -->
+                <uxap:ObjectPageSection title="Budget Detail">
+                    <uxap:subSections>
+                        <uxap:ObjectPageSubSection>
+                            <VBox class="sapUiSmallMargin">
+                                <VBox>
+                                    <Text text="(All values in ₹ Lacs.)" class="sectionSubtitle" />
+                                </VBox>
+                                <Table id="budgetTable" items="{budgetModel>/items}">
+                                    <columns>
+                                        <Column><Text text="NATURE OF BUDGET" /></Column>
+                                        <Column><Text text="BUDGET AMOUNT (₹ Lacs.)" /></Column>
+                                        <Column><Text text="5% CONTINGENCY (₹ Lacs.)" /></Column>
+                                        <Column><Text text="TOTAL (₹ Lacs.)" /></Column>
+                                    </columns>
+                                    <items>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <Text text="{budgetModel>nature}" />
+                                                <Input
+                                                    enabled="{viewenableddatacheck>/enableRowActions}"
+                                                    value="{budgetModel>amount}"
+                                                    type="Number"
+                                                    change="onBudgetAmountChange"
+                                                    editable="{= ${budgetModel>nature} !== 'Total' }" />
+                                                <Text text="{budgetModel>contingency}" />
+                                                <Text text="{budgetModel>total}" />
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+                            </VBox>
+                        </uxap:ObjectPageSubSection>
+                    </uxap:subSections>
+                </uxap:ObjectPageSection>
+
+                <!-- Attachment Section -->
+                <uxap:ObjectPageSection title="Attachment">
+                    <uxap:subSections>
+                        <uxap:ObjectPageSubSection>
+                            <VBox class="sapUiSmallMargin" width="100%">
+                                <Table id="attachmentsTable" items="{UploadDocSrvTabData>/attachments}">
+                                    <headerToolbar>
+                                        <OverflowToolbar>
+                                            <Text
+                                                text="Attachments: {= ${UploadDocSrvTabData>/attachments}.length }"
+                                                class="sapUiTinyMarginEnd" />
+                                            <ToolbarSpacer />
+                                            <u:FileUploader id="fileUploader"
+                                                fileType="jpg,png,pdf,docx,jpeg,csv,xlsx,eml"
+                                                multiple="true"
+                                                icon="sap-icon://upload"
+                                                buttonText="Upload"
+                                                visible="{viewenableddatacheck>/enableRowActions}"
+                                                buttonOnly="true"
+                                                change="onUploadTabAttchmment"
+                                                class="sapUiSmallMarginEnd">
+                                                <u:customData>
+                                                    <core:CustomData key="parentType" value="Request" writeToDom="false" />
+                                                </u:customData>
+                                            </u:FileUploader>
+                                        </OverflowToolbar>
+                                    </headerToolbar>
+                                    <columns>
+                                        <Column><Text text="File Name" /></Column>
+                                        <Column><Text text="Uploaded Date" /></Column>
+                                        <Column><Text text="Uploaded By" /></Column>
+                                        <Column width="9rem"><Text class="sapUiMediumMarginBegin" text="Action" /></Column>
+                                    </columns>
+                                    <items>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <Text text="{UploadDocSrvTabData>fileName}" />
+                                                <Text text="{UploadDocSrvTabData>uploadedOn}" />
+                                                <Text text="{UploadDocSrvTabData>uploadedBy}" />
+                                                <HBox width="100%">
+                                                    <Button
+                                                        icon="sap-icon://download"
+                                                        press="onDownloadTabAttachemnt"
+                                                        class="sapUiSmallMarginEnd">
+                                                        <customData>
+                                                            <core:CustomData key="fileName" value="{UploadDocSrvTabData>fileName}" />
+                                                            <core:CustomData key="ID" value="{UploadDocSrvTabData>ID}" />
+                                                        </customData>
+                                                    </Button>
+                                                    <Button
+                                                        icon="sap-icon://delete"
+                                                        class="sapUiMediumMarginEnd"
+                                                        press="onDeleteTabAttchment"
+                                                        enabled="{viewenableddatacheck>/enableRowActions}">
+                                                        <customData>
+                                                            <core:CustomData key="fileName" value="{UploadDocSrvTabData>fileName}" />
+                                                            <core:CustomData key="ID" value="{UploadDocSrvTabData>ID}" />
+                                                        </customData>
+                                                    </Button>
+                                                </HBox>
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+                            </VBox>
+                        </uxap:ObjectPageSubSection>
+                    </uxap:subSections>
+                </uxap:ObjectPageSection>
+
+                <!-- Approval History Section -->
+                <uxap:ObjectPageSection title="Approval History">
+                    <uxap:subSections>
+                        <uxap:ObjectPageSubSection>
+                            <VBox class="sapUiSmallMargin">
+                                <suite:Timeline id="approvalTimeline"
+                                    axisOrientation="Vertical"
+                                    showTimeFilter="false"
+                                    height="500px"
+                                    showItemFilter="false"
+                                    enableScroll="true"
+                                    content="{timelinesslogdata>/results}">
+                                    <suite:TimelineItem
+                                        dateTime="{
+                                            path: 'timelinesslogdata>createdAt',
+                                            type: 'sap.ui.model.type.Date',
+                                            formatOptions: {
+                                                style: 'medium',
+                                                strictParsing: true
+                                            }
+                                        }"
+                                        title="{
+                                            parts: [
+                                                'timelinesslogdata>role',
+                                                'timelinesslogdata>userName',
+                                                'timelinesslogdata>userEmail'
+                                            ],
+                                            formatter: '.formatTimelineTitle'
+                                        }"
+                                        text="{timelinesslogdata>remarks}"
+                                        userPicture="{timelinesslogdata>userPicture}"
+                                        icon="sap-icon://employee-approvals" />
+                                </suite:Timeline>
+                            </VBox>
+                        </uxap:ObjectPageSubSection>
+                    </uxap:subSections>
+                </uxap:ObjectPageSection>
+            </uxap:sections>
+        </uxap:ObjectPageLayout>
+    </Page>
+</mvc:View>
+
+
 UPDATE CODE 4
 
 <?xml version="1.0" encoding="UTF-8"?>
