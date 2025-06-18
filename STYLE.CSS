@@ -1,0 +1,175 @@
+UPDATED CSS
+
+/* Header styling */
+.customHeaderClass .sapUxAPObjectPageHeaderIdentifier {
+  background-color: #C60000 !important;
+  color: white !important;
+  padding: 10px !important;
+  font-size: 20px !important;
+  font-weight: bold !important;
+}
+
+/* Form field labels */
+.customFormClass .sapMLabel {
+  text-transform: uppercase !important;
+  font-size: 14px !important;
+  color: #333 !important;
+}
+
+/* Required field asterisk */
+.customFormClass .sapMLabelRequired::after {
+  /* content: '*' !important; */
+  color: red !important;
+  margin-left: 2px !important;
+}
+
+/* Input fields */
+.customFormClass .sapMInputBaseInner {
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  padding: 5px !important;
+}
+
+/* ComboBox and DatePicker */
+.customFormClass .sapMComboBox, .customFormClass .sapMDatePicker {
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+}
+
+/* Save button */
+.customButtonSave .sapMBtnInner {
+  background-color: white !important;
+  /* color: #C60000 !important; */
+  /* border: 1px solid #C60000 !important; */
+  border-radius: 4px !important;
+}
+
+/* Submit button */
+.customButtonSubmit .sapMBtnInner {
+  /* background-color: #C60000 !important; */
+  color: white !important;
+  border: none !important;
+  border-radius: 4px !important;
+}
+
+/* Button container */
+.customButtonContainer {
+  margin-top: 20px !important;
+  justify-content: center !important;
+}
+
+/* Form container */
+.customFormClass {
+  background-color: #f9f9f9 !important;
+  padding: 20px !important;
+}
+
+.sapMBarTitleAlignAuto  {
+  justify-content: center;
+  background-color: red;
+}
+
+.sapUiSizeCompact .sapMPageHeader .sapMIBar .sapMBarLeft, .sapUiSizeCompact .sapMPageFooter .sapMIBar .sapMBarLeft, .sapUiSizeCompact .sapMPageHeader .sapMIBar .sapMBarRight, .sapUiSizeCompact .sapMPageFooter .sapMIBar .sapMBarRight, .sapUiSizeCompact .sapMPageHeader .sapMIBar .sapMBarPH, .sapUiSizeCompact .sapMPageFooter .sapMIBar .sapMBarPH {
+  height: 2.5rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  justify-content: center;
+  background-color: red;
+}
+
+.sapMBar .sapMBarRight.sapMBarContainer>*:first-child:last-child, .sapMBar .sapMBarLeft.sapMBarContainer>*:first-child:last-child, .sapMBar .sapMBarMiddle .sapMBarContainer>*:first-child:last-child
+ {
+    margin: 0;
+    color: white;
+}
+
+.sapUiFormCL>.sapUiFormCLContainer {
+  width: 100%;
+  background-color: #f9f9f9 !important;
+}
+
+
+OLD CSS
+
+/* Header styling */
+.customHeaderClass .sapUxAPObjectPageHeaderIdentifier {
+  background-color: #C60000 !important;
+  color: white !important;
+  padding: 10px !important;
+  font-size: 20px !important;
+  font-weight: bold !important;
+}
+
+/* Form field labels */
+.customFormClass .sapMLabel {
+  text-transform: uppercase !important;
+  font-size: 14px !important;
+  color: #333 !important;
+}
+
+/* Required field asterisk */
+.customFormClass .sapMLabelRequired::after {
+  /* content: '*' !important; */
+  color: red !important;
+  margin-left: 2px !important;
+}
+
+/* Input fields */
+.customFormClass .sapMInputBaseInner {
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  padding: 5px !important;
+}
+
+/* ComboBox and DatePicker */
+.customFormClass .sapMComboBox, .customFormClass .sapMDatePicker {
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+}
+
+/* Save button */
+.customButtonSave .sapMBtnInner {
+  background-color: white !important;
+  /* color: #C60000 !important; */
+  /* border: 1px solid #C60000 !important; */
+  border-radius: 4px !important;
+}
+
+/* Submit button */
+.customButtonSubmit .sapMBtnInner {
+  /* background-color: #C60000 !important; */
+  color: white !important;
+  border: none !important;
+  border-radius: 4px !important;
+}
+
+/* Button container */
+.customButtonContainer {
+  margin-top: 20px !important;
+  justify-content: center !important;
+}
+
+/* Form container */
+.customFormClass {
+  background-color: #f9f9f9 !important;
+  padding: 20px !important;
+}
+
+.sapMBarTitleAlignAuto  {
+  justify-content: center;
+  background-color: red;
+}
+
+.sapUiSizeCompact .sapMPageHeader .sapMIBar .sapMBarLeft, .sapUiSizeCompact .sapMPageFooter .sapMIBar .sapMBarLeft, .sapUiSizeCompact .sapMPageHeader .sapMIBar .sapMBarRight, .sapUiSizeCompact .sapMPageFooter .sapMIBar .sapMBarRight, .sapUiSizeCompact .sapMPageHeader .sapMIBar .sapMBarPH, .sapUiSizeCompact .sapMPageFooter .sapMIBar .sapMBarPH {
+  height: 2.5rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  justify-content: center;
+  background-color: red;
+}
+
+.sapMBar .sapMBarRight.sapMBarContainer>*:first-child:last-child, .sapMBar .sapMBarLeft.sapMBarContainer>*:first-child:last-child, .sapMBar .sapMBarMiddle .sapMBarContainer>*:first-child:last-child
+ {
+    margin: 0;
+    color: white;
+}
