@@ -1,0 +1,27 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+<Dialog id="_IDGenDialog" type="Message" contentWidth="35%">
+<customHeader>
+<Toolbar id="_IDGenToolbar">
+<ToolbarSpacer id="_IDGenToolbarSpacer1"/>
+<FlexBox id="_IDGenFlexBox" direction="Row" alignItems="Start" justifyContent="Start">
+<!--  <Text text="Remarks" class="remarksdatacss"  required="true" />  -->
+<Label id="_IDGenLabel25" text="Remarks" class="remarksdatacss" required="true"/>
+</FlexBox>
+<ToolbarSpacer id="_IDGenToolbarSpacer2"/>
+</Toolbar>
+</customHeader>
+<content>
+<VBox id="_IDGenVBox8">
+<TextArea id="RemarkInput" placeholder="" liveChange="onRemarksChangeNBRF" value="{viewenableddatacheck>/remarkModel}" width="95%" height="120px" required="true"/>
+</VBox>
+</content>
+<buttons>
+<!--  <Button text="Submit" type="Accept" press="onSubmitReamrksData"  visible="{viewenableddatacheck>/enableRowActions}"/>  -->
+<Button id="submitremark" text="Submit" type="Accept" press="onSubmitReamrksData" visible="{viewenableddatacheck>/enableRowActions}"/>
+<Button id="approverremark" text="Approve" type="Accept" press="onApprovedData" visible="{viewenableddatacheck>/approvebuttonvisiblityData}"/>
+<Button id="Rejectremark" text="Reject" type="Accept" press="onRejectData" visible="false"/>
+<Button id="_IDGenButton3" text="Sent Back" type="Accept" press="onSendbackData" visible="{viewenableddatacheck>/sendbackbuttonvisiblity}"/>
+<Button id="_IDGenButton4" text="Cancel" type="Reject" press="onCloseReamrksFrag"/>
+</buttons>
+</Dialog>
+</core:FragmentDefinition>
