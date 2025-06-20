@@ -289,7 +289,7 @@ sap.ui.define([
         },
 
         // Save form as draft
-        onSaveSanctionform: function () {
+        onSaveCapexravexform: function () {
             if (!this._validateForm()) {
                 return;
             }
@@ -306,7 +306,7 @@ sap.ui.define([
         },
 
         // Submit form
-        onSubmitSanctionform: function () {
+        onSubmitCapexravexform: function () {
             if (!this._validateForm()) {
                 MessageBox.error("Please fill all required fields correctly.");
                 return;
@@ -850,6 +850,7 @@ sap.ui.define([
         }
     });
 });
+
 
 UPDATED CODE 6
 
