@@ -1,3 +1,888 @@
+UPDATED CODE 6
+
+sap.ui.define([
+    "sap/ui/core/mvc/Controller",
+    "sap/ui/model/json/JSONModel",
+    "sap/m/MessageToast",
+    "sap/m/MessageBox",
+    "sap/ui/core/routing/History",
+    "sap/ui/core/format/DateFormat",
+    "sap/ui/core/Fragment"
+], function (Controller, JSONModel, MessageToast, MessageBox, History, DateFormat, Fragment) {
+    "use strict";
+
+    return Controller.extend("com.capexrevex.capexravex.controller.capexrevex", {
+        // Formatter functions
+        formatInvoiceLabel: function (sPaymentOption, sPoNonPo) {
+            if (sPaymentOption === "Advance Payment" && sPoNonPo === "po") {
+                return "Proforma Number";
+            }
+            return "Invoice Number";
+        },
+
+        formatTimelineTitle: function (sRole, sUserName, sUserEmail) {
+            return sRole ? `${sRole}: ${sUserName} (${sUserEmail})` : `${sUserName} (${sUserEmail})`;
+        },
+
+        // Lifecycle method: Initialize models and bindings
+        onInit: function () {
+            var oView = this.getView();
+
+            // Initialize models
+            var oPortalModel = new JSONModel({
+                reqNo: this._generateNewRequestNumber(),
+                paymentOption: "Advance Payment",
+                paymentType: "Capex",
+                poNonPo: "po",
+                paymentDate: new Date().toISOString().substring(0, 10),
+                accountingDocNumber: "ACC123456",
+                po: "PO789",
+                vendorCode: "VEND456",
+                costCenter: "CC123",
+                wbs: "WBS456",
+                totalAmount: "54000",
+                vendorName: "Sample Vendor",
+                invoiceNumber: "INV001",
+                baseAmount: "50000",
+                gst: "5000",
+                tds: "1000",
+                buyerRequester: "Requestor 1",
+                buyerHod: "HOD 1",
+                paymentTerms: "term1",
+                remarks: ""
+            });
+
+            var oFieldEnablementModel = new JSONModel({
+                submitFieldsEnabled: true,
+                fieldsEnabled: true,
+                poEnabled: false
+            });
+
+            var oViewEnabledModel = new JSONModel({
+                enableRowActions: true,
+                remarkModel: "",
+                approvebuttonvisiblityData: false,
+                sendbackbuttonvisiblity: false
+            });
+
+            var oSearchModel = new JSONModel({
+                requestors: [
+                    { name: "Requestor 1", key: "req1" },
+                    { name: "Requestor 2", key: "req2" }
+                ],
+                hods: [
+                    { name: "HOD 1", key: "hod1" },
+                    { name: "HOD 2", key: "hod2" }
+                ]
+            });
+
+            var oRequestServiceModel = new JSONModel({
+                refNo: "REF" + Date.now(),
+                ssfdDtl: {
+                    background: "",
+                    justification: "",
+                    deliverables: ""
+                }
+            });
+
+            var oBudgetModel = new JSONModel({
+                items: [
+                    { nature: "Item 1", amount: 0, contingency: 0, total: 0 },
+                    { nature: "Item 2", amount: 0, contingency: 0, total: 0 },
+                    { nature: "Total", amount: 0, contingency: 0, total: 0 }
+                ]
+            });
+
+            var oUploadDocModel = new JSONModel({
+                attachments: []
+            });
+
+            var oTimelineModel = new JSONModel({
+                results: [
+                    {
+                        role: "Submitter",
+                        userName: "Jane Smith",
+                        userEmail: "jane.smith@example.com",
+                        remarks: "Form submitted with Request Number: REQ20250618093015",
+                        createdAt: "2025-06-18T09:30:15Z",
+                        userPicture: ""
+                    },
+                    {
+                        role: "HOD",
+                        userName: "Robert Brown",
+                        userEmail: "robert.brown@example.com",
+                        remarks: "Form approved by HOD",
+                        createdAt: "2025-06-18T14:45:22Z",
+                        userPicture: ""
+                    },
+                    {
+                        role: "Finance",
+                        userName: "Emily Johnson",
+                        userEmail: "emily.johnson@example.com",
+                        remarks: "Form approved for payment",
+                        createdAt: "2025-06-19T10:15:30Z",
+                        userPicture: ""
+                    }
+                ]
+            });
+
+            // Set models
+            oView.setModel(oPortalModel, "portalModel");
+            oView.setModel(oFieldEnablementModel, "fieldEnablement");
+            oView.setModel(oViewEnabledModel, "viewenableddatacheck");
+            oView.setModel(oSearchModel, "searchModel");
+            oView.setModel(oRequestServiceModel, "Requestservicemodel");
+            oView.setModel(oBudgetModel, "budgetModel");
+            oView.setModel(oUploadDocModel, "UploadDocSrvTabData");
+            oView.setModel(oTimelineModel, "timelinesslogdata");
+        },
+
+        // Handle route matched
+        _onRouteMatched: function (oEvent) {
+            var sRefNo = oEvent.getParameter("arguments").refNo;
+            if (sRefNo) {
+                this._loadFormData(sRefNo);
+            } else {
+                this._resetForm();
+            }
+        },
+
+        // Load form data
+        _loadFormData: function (sRefNo) {
+            this._callService(`/formData/${sRefNo}`, "GET")
+                .then(function (oResponse) {
+                    var oData = oResponse.data || {};
+
+                    this.getView().getModel("portalModel").setData({
+                        reqNo: oData.reqNo || this._generateNewRequestNumber(),
+                        paymentOption: oData.paymentOption || "",
+                        paymentType: oData.paymentType || "",
+                        poNonPo: oData.poNonPo || "",
+                        paymentDate: oData.paymentDate || null,
+                        accountingDocNumber: oData.accountingDocNumber || "",
+                        po: oData.po || "",
+                        vendorCode: oData.vendorCode || "",
+                        costCenter: oData.costCenter || "",
+                        wbs: oData.wbs || "",
+                        totalAmount: oData.totalAmount || "",
+                        vendorName: oData.vendorName || "",
+                        invoiceNumber: oData.invoiceNumber || "",
+                        baseAmount: oData.baseAmount || "",
+                        gst: oData.gst || "",
+                        tds: oData.tds || "",
+                        buyerRequester: oData.buyerRequester || "",
+                        buyerHod: oData.buyerHod || "",
+                        buyerRequesterKey: oData.buyerRequesterKey || "",
+                        buyerHodKey: oData.buyerHodKey || "",
+                        paymentTerms: oData.paymentTerms || "",
+                        remarks: oData.remarks || ""
+                    });
+
+                    this.getView().getModel("Requestservicemodel").setData({
+                        refNo: sRefNo,
+                        ssfdDtl: {
+                            background: oData.background || "",
+                            justification: oData.justification || "",
+                            deliverables: oData.deliverables || ""
+                        }
+                    });
+
+                    this.getView().getModel("budgetModel").setData({
+                        items: oData.budgetItems || [
+                            { nature: "Item 1", amount: 0, contingency: 0, total: 0 },
+                            { nature: "Item 2", amount: 0, contingency: 0, total: 0 },
+                            { nature: "Total", amount: 0, contingency: 0, total: 0 }
+                        ]
+                    });
+
+                    this.getView().getModel("UploadDocSrvTabData").setData({
+                        attachments: oData.attachments || []
+                    });
+
+                    this.getView().getModel("timelinesslogdata").setData({
+                        results: oData.approvalHistory || []
+                    });
+
+                    this.getView().getModel("fieldEnablement").setData({
+                        submitFieldsEnabled: oData.status !== "SUBMITTED",
+                        fieldsEnabled: oData.status !== "SUBMITTED" && !(oData.paymentOption === "Advance Payment" && oData.poNonPo === "po"),
+                        poEnabled: oData.poNonPo === "po"
+                    });
+
+                    this.getView().getModel("viewenableddatacheck").setProperty("/enableRowActions", oData.status !== "SUBMITTED");
+
+                    MessageToast.show("Form data loaded successfully!");
+                }.bind(this))
+                .catch(function (oError) {
+                    MessageBox.error("Error loading form data: " + oError.message);
+                });
+        },
+
+        // Navigation to dashboard
+        onDashboardui: function () {
+            var oHistory = History.getInstance();
+            var sPreviousHash = oHistory.getPreviousHash();
+
+            if (sPreviousHash !== undefined) {
+                window.history.go(-1);
+            } else {
+                var oRouter = this.getOwnerComponent().getRouter();
+                oRouter.navTo("dashboard");
+            }
+        },
+
+        // Generate unique request number
+        _generateNewRequestNumber: function () {
+            var now = new Date();
+            var timestamp = now.getFullYear().toString().substr(-2) +
+                (now.getMonth() + 1).toString().padStart(2, '0') +
+                now.getDate().toString().padStart(2, '0') +
+                now.getHours().toString().padStart(2, '0') +
+                now.getMinutes().toString().padStart(2, '0') +
+                now.getSeconds().toString().padStart(2, '0');
+            return "REQ" + timestamp;
+        },
+
+        // Handle payment option change
+        onPaymentOptionChange: function (oEvent) {
+            this._updateFieldEnablement();
+        },
+
+        // Handle PO/Non-PO change
+        onPoNonPoChange: function (oEvent) {
+            this._updateFieldEnablement();
+        },
+
+        // Update field enablement
+        _updateFieldEnablement: function () {
+            var oPortalModel = this.getView().getModel("portalModel");
+            var oFieldEnablementModel = this.getView().getModel("fieldEnablement");
+
+            var sPaymentOption = oPortalModel.getProperty("/paymentOption");
+            var sPoNonPo = oPortalModel.getProperty("/poNonPo");
+
+            var bFieldsEnabled = !(sPaymentOption === "Advance Payment" && sPoNonPo === "po");
+            var bPoEnabled = sPoNonPo === "po";
+
+            oFieldEnablementModel.setProperty("/fieldsEnabled", bFieldsEnabled);
+            oFieldEnablementModel.setProperty("/poEnabled", bPoEnabled);
+
+            if (!bFieldsEnabled) {
+                oPortalModel.setProperty("/gst", "");
+                oPortalModel.setProperty("/tds", "");
+                oPortalModel.setProperty("/totalAmount", "");
+                oPortalModel.setProperty("/paymentTerms", "");
+            }
+
+            if (!bPoEnabled) {
+                oPortalModel.setProperty("/po", "");
+            }
+        },
+
+        // Save form as draft
+        onSaveSanctionform: function () {
+            if (!this._validateForm()) {
+                return;
+            }
+
+            var oPortalModel = this.getView().getModel("portalModel").getData();
+            var oRequestServiceModel = this.getView().getModel("Requestservicemodel").getData();
+            var oBudgetModel = this.getView().getModel("budgetModel").getData();
+            var oUploadModel = this.getView().getModel("UploadDocSrvTabData").getData();
+
+            var oData = {
+                refNo: oRequestServiceModel.refNo,
+                reqNo: oPortalModel.reqNo,
+                paymentOption: oPortalModel.paymentOption,
+                paymentType: oPortalModel.paymentType,
+                poNonPo: oPortalModel.poNonPo,
+                paymentDate: oPortalModel.paymentDate,
+                accountingDocNumber: oPortalModel.accountingDocNumber,
+                po: oPortalModel.po,
+                vendorCode: oPortalModel.vendorCode,
+                costCenter: oPortalModel.costCenter,
+                wbs: oPortalModel.wbs,
+                totalAmount: oPortalModel.totalAmount,
+                vendorName: oPortalModel.vendorName,
+                invoiceNumber: oPortalModel.invoiceNumber,
+                baseAmount: oPortalModel.baseAmount,
+                gst: oPortalModel.gst,
+                tds: oPortalModel.tds,
+                buyerRequester: oPortalModel.buyerRequester,
+                buyerHod: oPortalModel.buyerHod,
+                buyerRequesterKey: oPortalModel.buyerRequesterKey,
+                buyerHodKey: oPortalModel.buyerHodKey,
+                paymentTerms: oPortalModel.paymentTerms,
+                remarks: oPortalModel.remarks,
+                background: oRequestServiceModel.ssfdDtl.background,
+                justification: oRequestServiceModel.ssfdDtl.justification,
+                deliverables: oRequestServiceModel.ssfdDtl.deliverables,
+                budgetItems: oBudgetModel.items,
+                attachments: oUploadModel.attachments,
+                status: "DRAFT"
+            };
+
+            this._callService("/saveDraft", "POST", oData)
+                .then(function () {
+                    MessageToast.show("Form saved as draft successfully. Request Number: " + oPortalModel.reqNo);
+                })
+                .catch(function (oError) {
+                    MessageBox.error("Error saving draft: " + oError.message);
+                });
+        },
+
+        // Submit form
+        onSubmitSanctionform: function () {
+            if (!this._validateForm()) {
+                MessageBox.error("Please fill all required fields correctly.");
+                return;
+            }
+
+            // Open remarks dialog
+            if (!this._oRemarksDialog) {
+                Fragment.load({
+                    id: this.getView().getId(),
+                    name: "com.capexrevex.capexravex.view.RemarksDialog",
+                    controller: this
+                }).then(function (oDialog) {
+                    this._oRemarksDialog = oDialog;
+                    this.getView().addDependent(this._oRemarksDialog);
+                    this.getView().getModel("viewenableddatacheck").setProperty("/remarkModel", "");
+                    this._oRemarksDialog.open();
+                }.bind(this));
+            } else {
+                this.getView().getModel("viewenableddatacheck").setProperty("/remarkModel", "");
+                this._oRemarksDialog.open();
+            }
+        },
+
+        // // Handle remarks change
+        // onRemarksChangeNBRF: function (oEvent) {
+        //     var oTextArea = oEvent.getSource();
+        //     var sValue = oEvent.getParameter("value");
+        //     if (sValue.length > 4000) {
+        //         oTextArea.setValueState("Error");
+        //         oTextArea.setValueStateText("Maximum 4000 characters allowed.");
+        //     } else {
+        //         oTextArea.setValueState("None");
+        //         oTextArea.setValueStateText("");
+        //     }
+        // },
+
+        // Submit remarks and form
+        onSubmitReamrksData: function () {
+            var sRemarks = this.getView().getModel("viewenableddatacheck").getProperty("/remarkModel");
+            if (!sRemarks) {
+                MessageToast.show("Please enter remarks before submitting.");
+                return;
+            }
+
+            var oPortalModel = this.getView().getModel("portalModel").getData();
+            var oRequestServiceModel = this.getView().getModel("Requestservicemodel").getData();
+            var oBudgetModel = this.getView().getModel("budgetModel").getData();
+            var oUploadModel = this.getView().getModel("UploadDocSrvTabData").getData();
+            var oTimelineModel = this.getView().getModel("timelinesslogdata");
+
+            var oData = {
+                refNo: oRequestServiceModel.refNo,
+                reqNo: oPortalModel.reqNo,
+                paymentOption: oPortalModel.paymentOption,
+                paymentType: oPortalModel.paymentType,
+                poNonPo: oPortalModel.poNonPo,
+                paymentDate: oPortalModel.paymentDate,
+                accountingDocNumber: oPortalModel.accountingDocNumber,
+                po: oPortalModel.po,
+                vendorCode: oPortalModel.vendorCode,
+                costCenter: oPortalModel.costCenter,
+                wbs: oPortalModel.wbs,
+                totalAmount: oPortalModel.totalAmount,
+                vendorName: oPortalModel.vendorName,
+                invoiceNumber: oPortalModel.invoiceNumber,
+                baseAmount: oPortalModel.baseAmount,
+                gst: oPortalModel.gst,
+                tds: oPortalModel.tds,
+                buyerRequester: oPortalModel.buyerRequester,
+                buyerHod: oPortalModel.buyerHod,
+                buyerRequesterKey: oPortalModel.buyerRequesterKey,
+                buyerHodKey: oPortalModel.buyerHodKey,
+                paymentTerms: oPortalModel.paymentTerms,
+                remarks: sRemarks,
+                background: oRequestServiceModel.ssfdDtl.background,
+                justification: oRequestServiceModel.ssfdDtl.justification,
+                deliverables: oRequestServiceModel.ssfdDtl.deliverables,
+                budgetItems: oBudgetModel.items,
+                attachments: oUploadModel.attachments,
+                status: "SUBMITTED",
+                approvalHistory: oTimelineModel.getData().results || []
+            };
+
+            // Add timeline entry for submission
+            var oTimelineEntry = {
+                role: "Submitter",
+                userName: "John Doe",
+                userEmail: "john.doe@example.com",
+                remarks: `Form submitted with Request Number: ${oPortalModel.reqNo}. Remarks: ${sRemarks}`,
+                createdAt: new Date().toISOString(),
+                userPicture: ""
+            };
+            oData.approvalHistory.push(oTimelineEntry);
+
+            this._callService("/submitForm", "POST", oData)
+                .then(function () {
+                    var aTimelineData = oTimelineModel.getProperty("/results");
+                    aTimelineData.push(oTimelineEntry);
+                    oTimelineModel.refresh(true);
+
+                    MessageToast.show("Form submitted successfully. Request Number: " + oPortalModel.reqNo);
+                    this.getView().getModel("fieldEnablement").setProperty("/submitFieldsEnabled", false);
+                    this.getView().getModel("fieldEnablement").setProperty("/fieldsEnabled", false);
+                    this.getView().getModel("viewenableddatacheck").setProperty("/enableRowActions", false);
+                    this._resetForm();
+                    this._oRemarksDialog.close();
+                }.bind(this))
+                .catch(function (oError) {
+                    MessageBox.error("Error submitting form: " + oError.message);
+                });
+        },
+
+        // Approve action
+        onApprovedData: function () {
+            var sRemarks = this.getView().getModel("viewenableddatacheck").getProperty("/remarkModel");
+            if (!sRemarks) {
+                MessageToast.show("Please enter remarks before approving.");
+                return;
+            }
+
+            var oPortalModel = this.getView().getModel("portalModel").getData();
+            var oTimelineModel = this.getView().getModel("timelinesslogdata");
+
+            var oData = {
+                refNo: oPortalModel.refNo || oPortalModel.reqNo,
+                reqNo: oPortalModel.reqNo,
+                status: "APPROVED",
+                remarks: sRemarks
+            };
+
+            var oTimelineEntry = {
+                role: "Approver",
+                userName: "John Doe",
+                userEmail: "john.doe@example.com",
+                remarks: `Form approved. Remarks: ${sRemarks}`,
+                createdAt: new Date().toISOString(),
+                userPicture: ""
+            };
+
+            this._callService("/approveForm", "POST", oData)
+                .then(function () {
+                    var aTimelineData = oTimelineModel.getProperty("/results");
+                    aTimelineData.push(oTimelineEntry);
+                    oTimelineModel.refresh(true);
+
+                    MessageToast.show("Form approved successfully.");
+                    this._oRemarksDialog.close();
+                }.bind(this))
+                .catch(function (oError) {
+                    MessageBox.error("Error approving form: " + oError.message);
+                });
+        },
+
+        // Reject action
+        onRejectData: function () {
+            var sRemarks = this.getView().getModel("viewenableddatacheck").getProperty("/remarkModel");
+            if (!sRemarks) {
+                MessageToast.show("Please enter remarks before rejecting.");
+                return;
+            }
+
+            var oPortalModel = this.getView().getModel("portalModel").getData();
+            var oTimelineModel = this.getView().getModel("timelinesslogdata");
+
+            var oData = {
+                refNo: oPortalModel.refNo || oPortalModel.reqNo,
+                reqNo: oPortalModel.reqNo,
+                status: "REJECTED",
+                remarks: sRemarks
+            };
+
+            var oTimelineEntry = {
+                role: "Approver",
+                userName: "John Doe",
+                userEmail: "john.doe@example.com",
+                remarks: `Form rejected. Remarks: ${sRemarks}`,
+                createdAt: new Date().toISOString(),
+                userPicture: ""
+            };
+
+            this._callService("/rejectForm", "POST", oData)
+                .then(function () {
+                    var aTimelineData = oTimelineModel.getProperty("/results");
+                    aTimelineData.push(oTimelineEntry);
+                    oTimelineModel.refresh(true);
+
+                    MessageToast.show("Form rejected successfully.");
+                    this._oRemarksDialog.close();
+                }.bind(this))
+                .catch(function (oError) {
+                    MessageBox.error("Error rejecting form: " + oError.message);
+                });
+        },
+
+        // Send back action
+        onSendbackData: function () {
+            var sRemarks = this.getView().getModel("viewenableddatacheck").getProperty("/remarkModel");
+            if (!sRemarks) {
+                MessageToast.show("Please enter remarks before sending back.");
+                return;
+            }
+
+            var oPortalModel = this.getView().getModel("portalModel").getData();
+            var oTimelineModel = this.getView().getModel("timelinesslogdata");
+
+            var oData = {
+                refNo: oPortalModel.refNo || oPortalModel.reqNo,
+                reqNo: oPortalModel.reqNo,
+                status: "SENT_BACK",
+                remarks: sRemarks
+            };
+
+            var oTimelineEntry = {
+                role: "Approver",
+                userName: "John Doe",
+                userEmail: "john.doe@example.com",
+                remarks: `Form sent back. Remarks: ${sRemarks}`,
+                createdAt: new Date().toISOString(),
+                userPicture: ""
+            };
+
+            this._callService("/sendBackForm", "POST", oData)
+                .then(function () {
+                    var aTimelineData = oTimelineModel.getProperty("/results");
+                    aTimelineData.push(oTimelineEntry);
+                    oTimelineModel.refresh(true);
+
+                    MessageToast.show("Form sent back successfully.");
+                    this._oRemarksDialog.close();
+                }.bind(this))
+                .catch(function (oError) {
+                    MessageBox.error("Error sending back form: " + oError.message);
+                });
+        },
+
+        // Close remarks dialog
+        onCloseReamrksFrag: function () {
+            this.getView().getModel("viewenableddatacheck").setProperty("/remarkModel", "");
+            this._oRemarksDialog.close();
+        },
+
+        // Validate form
+        _validateForm: function () {
+            var oPortalModel = this.getView().getModel("portalModel").getData();
+            var oRequestServiceModel = this.getView().getModel("Requestservicemodel").getData();
+            var oFieldEnablementModel = this.getView().getModel("fieldEnablement");
+            var bFieldsEnabled = oFieldEnablementModel.getProperty("/fieldsEnabled");
+            var bValid = true;
+
+            var aRequiredFields = [
+                { field: "paymentOption", value: oPortalModel.paymentOption, label: "Payment Option" },
+                { field: "paymentType", value: oPortalModel.paymentType, label: "Payment Type" },
+                { field: "poNonPo", value: oPortalModel.poNonPo, label: "PO/Non PO" },
+                { field: "paymentDate", value: oPortalModel.paymentDate, label: "Payment Date" },
+                { field: "vendorName", value: oPortalModel.vendorName, label: "Vendor Name" },
+                { field: "invoiceNumber", value: oPortalModel.invoiceNumber, label: "Invoice Number" },
+                { field: "costCenter", value: oPortalModel.costCenter, label: "Cost Center" },
+                { field: "wbs", value: oPortalModel.wbs, label: "WBS" },
+                { field: "baseAmount", value: oPortalModel.baseAmount, label: "Base Amount" },
+                { field: "buyerRequester", value: oPortalModel.buyerRequester, label: "Buyer Requester" }
+            ];
+
+            if (bFieldsEnabled) {
+                aRequiredFields.push({ field: "gst", value: oPortalModel.gst, label: "GST" });
+                aRequiredFields.push({ field: "tds", value: oPortalModel.tds, label: "TDS" });
+            }
+
+            aRequiredFields.forEach(function (oField) {
+                if (!oField.value || oField.value === "") {
+                    MessageToast.show(`${oField.label} is a required field.`);
+                    bValid = false;
+                } else if (["baseAmount", "gst", "tds"].includes(oField.field) && isNaN(parseFloat(oField.value))) {
+                    MessageToast.show(`${oField.label} must be a valid number.`);
+                    bValid = false;
+                }
+            });
+
+            var oJustification = oRequestServiceModel.ssfdDtl;
+            if (!oJustification.background || !oJustification.justification || !oJustification.deliverables) {
+                MessageToast.show("All justification details (Background, Justification, Deliverables) are required.");
+                bValid = false;
+            }
+
+            return bValid;
+        },
+
+        // Reset form
+        _resetForm: function () {
+            this.getView().getModel("portalModel").setData({
+                reqNo: this._generateNewRequestNumber(),
+                paymentOption: "",
+                paymentType: "",
+                poNonPo: "",
+                paymentDate: null,
+                accountingDocNumber: "",
+                po: "",
+                vendorCode: "",
+                costCenter: "",
+                wbs: "",
+                totalAmount: "",
+                vendorName: "",
+                invoiceNumber: "",
+                baseAmount: "",
+                gst: "",
+                tds: "",
+                buyerRequester: "",
+                buyerHod: "",
+                buyerRequesterKey: "",
+                buyerHodKey: "",
+                paymentTerms: "",
+                remarks: ""
+            });
+
+            this.getView().getModel("Requestservicemodel").setData({
+                refNo: "REF" + Date.now(),
+                ssfdDtl: {
+                    background: "",
+                    justification: "",
+                    deliverables: ""
+                }
+            });
+
+            this.getView().getModel("budgetModel").setData({
+                items: [
+                    { nature: "Item 1", amount: 0, contingency: 0, total: 0 },
+                    { nature: "Item 2", amount: 0, contingency: 0, total: 0 },
+                    { nature: "Total", amount: 0, contingency: 0, total: 0 }
+                ]
+            });
+
+            this.getView().getModel("UploadDocSrvTabData").setData({
+                attachments: []
+            });
+
+            this.getView().getModel("timelinesslogdata").setData({
+                results: []
+            });
+
+            this.getView().getModel("fieldEnablement").setData({
+                submitFieldsEnabled: true,
+                fieldsEnabled: true,
+                poEnabled: false
+            });
+
+            this.getView().getModel("viewenableddatacheck").setData({
+                enableRowActions: true,
+                remarkModel: "",
+                approvebuttonvisiblityData: false,
+                sendbackbuttonvisiblity: false
+            });
+        },
+
+        // Handle buyer requester selection
+        onSuggestionItemSelectedBuyerRequester: function (oEvent) {
+            var oSelectedItem = oEvent.getParameter("selectedItem");
+            if (oSelectedItem) {
+                this.getView().getModel("portalModel").setProperty("/buyerRequester", oSelectedItem.getText());
+                this.getView().getModel("portalModel").setProperty("/buyerRequesterKey", oSelectedItem.getKey());
+            }
+        },
+
+        // Handle buyer HOD selection
+        onSuggestionItemSelectedBuyerHod: function (oEvent) {
+            var oSelectedItem = oEvent.getParameter("selectedItem");
+            if (oSelectedItem) {
+                this.getView().getModel("portalModel").setProperty("/buyerHod", oSelectedItem.getText());
+                this.getView().getModel("portalModel").setProperty("/buyerHodKey", oSelectedItem.getKey());
+            }
+        },
+
+        // Handle live change in text areas
+        handleLiveChange: function (oEvent) {
+            var oTextArea = oEvent.getSource();
+            var sValue = oEvent.getParameter("value");
+            if (sValue.length > 4000) {
+                oTextArea.setValueState("Error");
+                oTextArea.setValueStateText("Maximum 4000 characters allowed.");
+            } else {
+                oTextArea.setValueState("None");
+            }
+        },
+
+        // Handle budget amount change
+        onBudgetAmountChange: function (oEvent) {
+            var oInput = oEvent.getSource();
+            var fAmount = parseFloat(oInput.getValue()) || 0;
+            var oItem = oInput.getBindingContext("budgetModel").getObject();
+            oItem.contingency = fAmount * 0.05;
+            oItem.total = fAmount + oItem.contingency;
+
+            var oBudgetModel = this.getView().getModel("budgetModel");
+            var aItems = oBudgetModel.getProperty("/items");
+            var oTotalItem = aItems.find(function (item) { return item.nature === "Total"; });
+            var fTotalAmount = aItems.reduce(function (sum, item) {
+                return item.nature !== "Total" ? sum + (parseFloat(item.amount) || 0) : sum;
+            }, 0);
+            oTotalItem.amount = fTotalAmount;
+            oTotalItem.contingency = fTotalAmount * 0.05;
+            oTotalItem.total = fTotalAmount + oTotalItem.contingency;
+
+            oBudgetModel.refresh(true);
+        },
+
+        // Handle file upload
+        onUploadTabAttchmment: function (oEvent) {
+            var oFileUploader = oEvent.getSource();
+            var aFiles = oEvent.getParameter("files");
+            var oUploadModel = this.getView().getModel("UploadDocSrvTabData");
+
+            for (var i = 0; i < aFiles.length; i++) {
+                var oFile = aFiles[i];
+                var oFormData = new FormData();
+                oFormData.append("file", oFile);
+                oFormData.append("parentType", "Request");
+
+                this._uploadFile("/uploadAttachment", oFormData)
+                    .then(function (oResponse) {
+                        var aAttachments = oUploadModel.getProperty("/attachments");
+                        aAttachments.push({
+                            fileName: oFile.name,
+                            uploadedOn: new Date().toISOString(),
+                            uploadedBy: "Current User",
+                            ID: oResponse.ID || Date.now().toString()
+                        });
+                        oUploadModel.refresh(true);
+                        MessageToast.show("File uploaded successfully!");
+                    })
+                    .catch(function (oError) {
+                        MessageBox.error("Error uploading file: " + oError.message);
+                    });
+            }
+        },
+
+        // Handle file download
+        onDownloadTabAttachemnt: function (oEvent) {
+            var oButton = oEvent.getSource();
+            var sFileName = oButton.getCustomData().find(function (oCustomData) {
+                return oCustomData.getKey() === "fileName";
+            }).getValue();
+            var sID = oButton.getCustomData().find(function (oCustomData) {
+                return oCustomData.getKey() === "ID";
+            }).getValue();
+
+            this._callService(`/downloadAttachment/${sID}`, "GET")
+                .then(function (oResponse) {
+                    var blob = new Blob([oResponse.data], { type: oResponse.contentType });
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement("a");
+                    a.href = url;
+                    a.download = sFileName;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                })
+                .catch(function (oError) {
+                    MessageBox.error("Error downloading file: " + oError.message);
+                });
+        },
+
+        // Handle file deletion
+        onDeleteTabAttchment: function (oEvent) {
+            var oButton = oEvent.getSource();
+            var sFileName = oButton.getCustomData().find(function (oCustomData) {
+                return oCustomData.getKey() === "fileName";
+            }).getValue();
+            var sID = oButton.getCustomData().find(function (oCustomData) {
+                return oCustomData.getKey() === "ID";
+            }).getValue();
+            var oUploadModel = this.getView().getModel("UploadDocSrvTabData");
+
+            MessageBox.confirm(`Are you sure you want to delete ${sFileName}?`, {
+                title: "Confirm Deletion",
+                actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
+                onClose: function (sAction) {
+                    if (sAction === MessageBox.Action.OK) {
+                        this._callService(`/deleteAttachment/${sID}`, "DELETE")
+                            .then(function () {
+                                var aAttachments = oUploadModel.getProperty("/attachments");
+                                var iIndex = aAttachments.findIndex(function (item) { return item.ID === sID; });
+                                if (iIndex !== -1) {
+                                    aAttachments.splice(iIndex, 1);
+                                    oUploadModel.refresh(true);
+                                    MessageToast.show("File deleted successfully!");
+                                }
+                            }.bind(this))
+                            .catch(function (oError) {
+                                MessageBox.error("Error deleting file: " + oError.message);
+                            });
+                    }
+                }.bind(this)
+            });
+        },
+
+        // Mock service call
+        _callService: function (sUrl, sMethod, oData) {
+            return new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                    resolve({
+                        status: "Success",
+                        data: {
+                            refNo: oData?.refNo || "REF123456",
+                            reqNo: oData?.reqNo || this._generateNewRequestNumber(),
+                            paymentOption: oData?.paymentOption || "",
+                            paymentType: oData?.paymentType || "",
+                            poNonPo: oData?.poNonPo || "",
+                            paymentDate: oData?.paymentDate || null,
+                            accountingDocNumber: oData?.accountingDocNumber || "",
+                            po: oData?.po || "",
+                            vendorCode: oData?.vendorCode || "",
+                            costCenter: oData?.costCenter || "",
+                            wbs: oData?.wbs || "",
+                            totalAmount: oData?.totalAmount || "",
+                            vendorName: oData?.vendorName || "",
+                            invoiceNumber: oData?.invoiceNumber || "",
+                            baseAmount: oData?.baseAmount || "",
+                            gst: oData?.gst || "",
+                            tds: oData?.tds || "",
+                            buyerRequester: oData?.buyerRequester || "",
+                            buyerHod: oData?.buyerHod || "",
+                            buyerRequesterKey: oData?.buyerRequesterKey || "",
+                            buyerHodKey: oData?.buyerHodKey || "",
+                            paymentTerms: oData?.paymentTerms || "",
+                            remarks: oData?.remarks || "",
+                            background: oData?.background || "",
+                            justification: oData?.justification || "",
+                            deliverables: oData?.deliverables || "",
+                            budgetItems: oData?.budgetItems || [
+                                { nature: "Item 1", amount: 0, contingency: 0, total: 0 },
+                                { nature: "Item 2", amount: 0, contingency: 0, total: 0 },
+                                { nature: "Total", amount: 0, contingency: 0, total: 0 }
+                            ],
+                            attachments: oData?.attachments || [],
+                            approvalHistory: oData?.approvalHistory || [],
+                            status: oData?.status || "DRAFT"
+                        }
+                    });
+                }.bind(this), 500);
+            }.bind(this));
+        },
+
+        // Mock file upload
+        _uploadFile: function (sUrl, oFormData) {
+            return new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                    resolve({ ID: Date.now().toString() });
+                }, 500);
+            });
+        }
+    });
+});
+
 UPDATED CODE 5
 
 sap.ui.define([
