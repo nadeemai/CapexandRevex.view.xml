@@ -1,0 +1,202 @@
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:uxap="sap.uxap"
+    xmlns:suite="sap.suite.ui.commons"
+    controllerName="com.capexrevex.capexravex.controller.Approval">
+
+    <Page id="approvalPage" 
+          title="APPROVAL SCREEN" 
+          showNavButton="true" 
+          navButtonPress="onNavBack">
+        <uxap:ObjectPageLayout id="approvalObjectPageLayout" 
+                              showTitleInHeaderContent="true" 
+                              upperCaseAnchorBar="false" 
+                              showHeaderContent="true" 
+                              showFooter="true">
+            <uxap:headerTitle>
+                <uxap:ObjectPageDynamicHeaderTitle id="approvalHeaderTitle">
+                    <uxap:actions>
+                        <HBox id="actionButtonsContainer">
+                            <Button
+                                id="approveBtn"
+                                text="Approve"
+                                type="Accept"
+                                press="onApprovedData"
+                                ariaLabelledBy="approveBtnLabel"/>
+                            <Button
+                                id="rejectBtn"
+                                text="Reject"
+                                type="Reject"
+                                press="onRejectData"
+                                ariaLabelledBy="rejectBtnLabel"/>
+                            <Button
+                                id="sendBackBtn"
+                                text="Send Back"
+                                type="Default"
+                                press="onSendbackData"
+                                ariaLabelledBy="sendBackBtnLabel"/>
+                        </HBox>
+                    </uxap:actions>
+                </uxap:ObjectPageDynamicHeaderTitle>
+            </uxap:headerTitle>
+
+            <uxap:headerContent>
+                <VBox id="headerFormContainer3">
+                    <form:SimpleForm
+                        id="ApprovalDetailsForm"
+                        editable="false"
+                        layout="ColumnLayout"
+                        labelSpanXL="12"
+                        labelSpanL="12"
+                        labelSpanM="12"
+                        columnsXL="4"
+                        columnsL="4"
+                        columnsM="1"
+                        adjustLabelSpan="false"
+                        class="sapUiSmallMarginBeginEnd">
+
+                        <form:content>
+                            <!-- ROW 1 -->
+                            <Label id="_IDGenLabel" text="Requester Token/Name" />
+                            <Input id="_IDGenInput1" value="50002151 - PRIYATHAM TELAPROLU" editable="false" width="100%" />
+
+                            <Label id="_IDGenLabel1" text="Payment Option" />
+                            <Input id="_IDGenInput2" value="{formData>/paymentOption}" editable="false" width="100%" />
+
+                            <Label id="_IDGenLabel2" text="Accounting Document Number" />
+                            <Input id="_IDGenInput3" value="{formData>/accountingDocNumber}" editable="false" width="100%" />
+
+                            <Label id="_IDGenLabel3" text="TDS" />
+                            <Input id="_IDGenInput4" value="{formData>/tds}" editable="false" width="100%" />
+
+                            <!-- ROW 2 -->
+                            <Label id="_IDGenLabel4" text="Vendor Code" />
+                            <Input id="_IDGenInput5" value="{formData>/vendorCode}" editable="false" width="100%" />
+
+                            <Label id="_IDGenLabel5" text="Department" />
+                            <Input id="_IDGenInput6" value="TEMP" editable="false" width="100%" />
+
+                            <Label id="_IDGenLabel6" text="Payment Type" />
+                            <Input id="_IDGenInput7" value="{formData>/paymentType}" editable="false" width="100%" />
+
+                            <Label id="_IDGenLabel7" text="Payment Date" />
+                            <Input id="_IDGenInput8" value="{formData>/paymentDate}" editable="false" width="100%" />
+
+                            <!-- ROW 3 -->
+                            <Label id="_IDGenLabel8" text="Total Amount" />
+                            <Input id="_IDGenInput9" value="{formData>/totalAmount}" editable="false" width="100%" />
+
+                            <Label id="_IDGenLabel9" text="PO" />
+                            <Input id="_IDGenInput10" value="{formData>/po}" editable="false" width="100%" />
+
+                            <Label id="_IDGenLabel10" text="Date" />
+                            <Input id="_IDGenInput11" value="2023-08-02" editable="false" width="100%" />
+
+                            <Label id="_IDGenLabel11" text="PO/Non PO" />
+                            <Input id="_IDGenInput12" value="{formData>/poNonPo}" editable="false" width="100%" />
+
+                            <!-- ROW 4 -->
+                            <Label id="_IDGenLabel12" text="{parts: [{path: 'formData>/paymentOption'}, {path: 'formData>/poNonPo'}], formatter: '.formatInvoiceLabel'}" />
+                            <Input id="_IDGenInput13" value="{formData>/invoiceNumber}" editable="false" width="100%" />
+
+                            <Label id="_IDGenLabel13" text="WBS" />
+                            <Input id="_IDGenInput14" value="{formData>/wbs}" editable="false" width="100%" />
+
+                            <Label id="_IDGenLabel14" text="Payment Terms" />
+                            <Input id="_IDGenInput17" value="{formData>/paymentTerms}" editable="false" width="100%" />
+
+                            <!-- ROW 5 -->
+                            <Label id="_IDGenLabel15" text="Request Number" />
+                            <Input id="_IDGenInput18" value="{formData>/reqNo}" editable="false" width="100%" />
+
+                            <Label id="_IDGenLabel16" text="Vendor Name" />
+                            <Input id="_IDGenInput19" value="{formData>/vendorName}" editable="false" width="100%" />
+
+                            <Label id="_IDGenLabel17" text="Cost Center" />
+                            <Input id="_IDGenInput20" value="{formData>/costCenter}" editable="false" width="100%" />
+
+                            <Label id="_IDGenLabel18" text="Base Amount" />
+                            <Input id="_IDGenInput21" value="{formData>/baseAmount}" editable="false" width="100%" />
+                        </form:content>
+                    </form:SimpleForm>
+                </VBox>
+            </uxap:headerContent>
+
+            <uxap:sections>
+                <!-- Approval Details Section -->
+                <uxap:ObjectPageSection id="approvalDetailsSection" title="Approval Details">
+                    <uxap:subSections>
+                        <uxap:ObjectPageSubSection id="approvalDetailsSubSection">
+                            <VBox id="approvalDetailsVBox" class="sapUiSmallMargin">
+                                <form:SimpleForm
+                                    id="ApproverDetailsForm4"
+                                    editable="false"
+                                    layout="ColumnLayout"
+                                    labelSpanXL="12"
+                                    labelSpanL="12"
+                                    labelSpanM="12"
+                                    columnsXL="4"
+                                    columnsL="4"
+                                    columnsM="1"
+                                    adjustLabelSpan="false"
+                                    class="sapUiSmallMarginBeginEnd">
+
+                                    <form:content>
+                                        <!-- ROW 1 -->
+                                        <Label id="_IDGenLabel19" text="Buyer Requestor" />
+                                        <Input id="_IDGenInput22" value="{formData>/buyerRequester}" editable="false" width="100%" />
+
+                                        <Label id="_IDGenLabel20" text="Buyer HOD" />
+                                        <Input id="_IDGenInput23" value="{formData>/buyerHod}" editable="false" width="100%" />
+                                    </form:content>
+                                </form:SimpleForm>
+                            </VBox>
+                        </uxap:ObjectPageSubSection>
+                    </uxap:subSections>
+                </uxap:ObjectPageSection>
+
+                <!-- Approval History Section -->
+                <uxap:ObjectPageSection id="approvalHistorySection" title="Approval History">
+                    <uxap:subSections>
+                        <uxap:ObjectPageSubSection id="approvalHistorySubSection">
+                            <VBox id="approvalHistoryVBox" class="sapUiSmallMargin">
+                                <suite:Timeline id="approvalTimeline"
+                                    axisOrientation="Vertical"
+                                    showTimeFilter="false"
+                                    height="500px"
+                                    showItemFilter="false"
+                                    enableScroll="true"
+                                    content="{formData>/approvalHistory}">
+                                    <suite:TimelineItem id="_IDGenTimelineItem1"
+                                        dateTime="{
+                                            path: 'formData>createdAt',
+                                            type: 'sap.ui.model.type.Date',
+                                            formatOptions: {
+                                                style: 'medium',
+                                                strictParsing: true
+                                            }
+                                        }"
+                                        title="{
+                                            parts: [
+                                                'formData>role',
+                                                'formData>userName',
+                                                'formData>userEmail'
+                                            ],
+                                            formatter: '.formatTimelineTitle'
+                                        }"
+                                        text="{formData>remarks}"
+                                        userPicture="{formData>userPicture}"
+                                        icon="sap-icon://employee-approvals" />
+                                </suite:Timeline>
+                            </VBox>
+                        </uxap:ObjectPageSubSection>
+                    </uxap:subSections>
+                </uxap:ObjectPageSection>
+            </uxap:sections>
+        </uxap:ObjectPageLayout>
+    </Page>
+</mvc:View>
