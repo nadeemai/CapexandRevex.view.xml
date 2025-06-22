@@ -1,3 +1,335 @@
+UPDATED CODE 9
+
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:uxap="sap.uxap"
+    xmlns:u="sap.ui.unified"
+    xmlns:suite="sap.suite.ui.commons"
+    controllerName="com.capexrevex.capexravex.controller.capexrevex">
+
+    <Page id="sanctionFDPage" 
+          class="custom-scope" 
+          title="INTEGRATED PAYMENT MANAGEMENT PORTAL" 
+          showNavButton="true" 
+          navButtonPress="onDashboardui">
+        <uxap:ObjectPageLayout id="sanctionFDObjectPageLayout" 
+                              showTitleInHeaderContent="true" 
+                              upperCaseAnchorBar="false" 
+                              showHeaderContent="true" 
+                              showFooter="true">
+            <uxap:headerTitle>
+                <uxap:ObjectPageDynamicHeaderTitle id="sanctionFDHeaderTitle">
+                    <uxap:actions>
+                        <HBox id="_IDGenHBox" class="customhead">
+                            <HBox id="actionButtonsContainer2">
+                                <Button
+                                    id="saveDraftBtn"
+                                    text="Save As Draft"
+                                    visible="{viewenableddatacheck>/enableRowActions}"
+                                    type="Accept"
+                                    press="onSaveCapexravexform"
+                                    ariaLabelledBy="saveDraftBtnLabel"/>
+                                <Button
+                                    id="submitBtn"
+                                    text="{i18n>Submit}"
+                                    visible="{viewenableddatacheck>/enableRowActions}"
+                                    type="Emphasized"
+                                    press="onSubmitCapexravexform"
+                                    ariaLabelledBy="submitBtnLabel"/>
+                            </HBox>
+                        </HBox>
+                    </uxap:actions>
+                </uxap:ObjectPageDynamicHeaderTitle>
+            </uxap:headerTitle>
+
+            <uxap:headerContent>
+                <VBox id="headerFormContainer">
+                    <form:SimpleForm
+                        id="PaymentDetailsForm"
+                        editable="true"
+                        layout="ColumnLayout"
+                        labelSpanXL="12"
+                        labelSpanL="12"
+                        labelSpanM="12"
+                        columnsXL="4"
+                        columnsL="4"
+                        columnsM="1"
+                        adjustLabelSpan="false"
+                        class="sapUiSmallMarginBeginEnd">
+
+                        <form:content>
+                            <!-- ROW 1 -->
+                            <Label text="Requester Token/Name" />
+                            <Input value="50002151 - PRIYATHAM TELAPROLU" editable="false" width="100%" />
+
+                            <Label text="Payment Option" required="true" />
+                            <ComboBox selectedKey="{portalModel>/paymentOption}" placeholder="Select Payment Option"
+                                enabled="{fieldEnablement>/submitFieldsEnabled}" change="onPaymentOptionChange">
+                                <core:Item text="Advance Payment" key="Advance Payment" />
+                                <core:Item text="Regular Payment" key="Regular Payment" />
+                            </ComboBox>
+
+                            <Label text="Accounting Document Number" />
+                            <Input value="{portalModel>/accountingDocNumber}" placeholder="Enter Accounting Document Number" width="100%"  />
+
+                            <Label text="TDS" />
+                            <Input value="{portalModel>/tds}" placeholder="Enter TDS" width="100%" editable="false" />
+
+                            <!-- ROW 2 -->
+                            <Label text="Vendor Code" required="true" />
+                            <Input value="{portalModel>/vendorName}" placeholder="Enter Vendor Code" width="100%" enabled="{fieldEnablement>/fieldsEnabled}" />
+
+                            <Label text="Department" required="true" />
+                            <Input value="TEMP" editable="false" width="100%" />
+
+                            <Label text="Payment Type" required="true" />
+                            <ComboBox selectedKey="{portalModel>/paymentType}" placeholder="Select Payment Type"
+                                enabled="{fieldEnablement>/submitFieldsEnabled}">
+                                <core:Item text="Capex" key="Capex" />
+                                <core:Item text="Revex" key="Revex" />
+                            </ComboBox>
+
+                            <Label text="Payment Date" required="true" />
+                            <DatePicker value="{portalModel>/paymentDate}" displayFormat="dd-MM-yyyy" valueFormat="yyyy-MM-dd"
+                                placeholder="Select Payment Date" width="100%" />
+
+                            <!-- ROW 3 -->
+                            <Label text="Total Amount" />
+                            <Input value="{portalModel>/totalAmount}" type="Number" placeholder="Enter Total Amount" width="100%" enabled="{fieldEnablement>/fieldsEnabled}" />
+
+                            <Label text="PO" required="true" />
+                            <Input value="{portalModel>/po}" placeholder="Enter PO" width="100%" enabled="{fieldEnablement>/poEnabled}" />
+
+                            <Label text="Date" required="true" />
+                            <DatePicker value="2023-08-02" displayFormat="dd-MM-yyyy" valueFormat="yyyy-MM-dd" editable="false" width="100%" />
+
+                            <Label text="PO/Non PO" required="true" />
+                            <ComboBox selectedKey="{portalModel>/poNonPo}" placeholder="Select PO Type"
+                                enabled="{fieldEnablement>/submitFieldsEnabled}" change="onPoNonPoChange">
+                                <core:Item text="PO Based" key="po" />
+                                <core:Item text="Non-PO" key="nonpo" />
+                            </ComboBox>
+
+                            <!-- ROW 4 -->
+                            <Label text="{parts: [{path: 'portalModel>/paymentOption'}, {path: 'portalModel>/poNonPo'}], formatter: '.formatInvoiceLabel'}" required="true" />
+                            <Input value="{portalModel>/invoiceNumber}" placeholder="Enter Invoice/Proforma Number" width="100%" />
+
+                            <Label text="WBS" required="true" />
+                            <Input value="{portalModel>/wbs}" placeholder="Enter WBS" width="100%" enabled="{fieldEnablement>/fieldsEnabled}" />
+
+                            <Label text="Payment Terms" />
+                            <ComboBox selectedKey="{portalModel>/paymentTerms}" placeholder="Select Payment Terms"
+                                enabled="{fieldEnablement>/fieldsEnabled}">
+                                <core:Item text="Term 1" key="term1" />
+                                <core:Item text="Term 2" key="term2" />
+                            </ComboBox>
+
+                            <!-- ROW 5 -->
+                            <Label text="Request Number" required="true" />
+                            <Input value="{portalModel>/reqNo}" editable="false" width="100%" />
+
+                            <Label text="Vendor Name" required="true" />
+                            <Input value="{portalModel>/vendorName}" placeholder="Enter Vendor Name" width="100%" enabled="{fieldEnablement>/fieldsEnabled}" />
+
+                            <Label text="Cost Center" required="true" />
+                            <Input value="{portalModel>/costCenter}" placeholder="Enter Cost Center" width="100%" enabled="{fieldEnablement>/fieldsEnabled}" />
+
+                            <Label text="Total Amount" />
+                            <Input value="{portalModel>/totalAmount}" type="Number" placeholder="Enter Total Amount" width="100%" enabled="{fieldEnablement>/fieldsEnabled}" />
+                        </form:content>
+                    </form:SimpleForm>
+                </VBox>
+            </uxap:headerContent>
+            
+            <uxap:sections>
+                <!-- Justification Details Section -->
+                <uxap:ObjectPageSection id="_IDGenObjectPageSection4" title="Approval">
+                    <uxap:subSections>
+                        <uxap:ObjectPageSubSection id="_IDGenObjectPageSubSection4">
+                            <VBox id="_IDGenVBox84" class="sapUiSmallMargin">
+                                <form:SimpleForm
+                                    id="ApproverDetailsForm"
+                                    editable="true"
+                                    layout="ColumnLayout"
+                                    labelSpanXL="12"
+                                    labelSpanL="12"
+                                    labelSpanM="12"
+                                    columnsXL="4"
+                                    columnsL="4"
+                                    columnsM="1"
+                                    adjustLabelSpan="false"
+                                    class="sapUiSmallMarginBeginEnd">
+
+                                    <form:content>
+                                        <!-- ROW 1 -->
+                                        <Label id="_IDGenLabel25" text="Buyer Requestor" required="true" />
+                                        <Input id="_IDGenInput15" value="{portalModel>/buyerRequester}" placeholder="Enter Buyer Requestor" width="100%" />
+
+                                        <Label id="_IDGenLabel26" text="Buyer HOD" required="true" />
+                                        <Input id="_IDGenInput16" value="{portalModel>/buyerHod}" placeholder="Enter Buyer HOD" width="100%" />
+                                    </form:content>
+                                </form:SimpleForm>
+                            </VBox>
+                        </uxap:ObjectPageSubSection>
+                    </uxap:subSections>
+                </uxap:ObjectPageSection>
+
+
+                <!-- Budget Detail Section -->
+                <!-- <uxap:ObjectPageSection id="_IDGenObjectPageSection1" title="Budget Detail">
+                    <uxap:subSections>
+                        <uxap:ObjectPageSubSection id="_IDGenObjectPageSubSection1">
+                            <VBox id="_IDGenVBox4" class="sapUiSmallMargin">
+                                <VBox id="_IDGenVBox5">
+                                    <Text id="_IDGenText" text="(All values in ₹ Lacs.)" class="sectionSubtitle" />
+                                </VBox>
+                                <Table id="budgetTablee" items="{budgetModel>/items}">
+                                    <columns>
+                                        <Column id="_IDGenColumn"><Text id="_IDGenText1" text="NATURE OF BUDGET" /></Column>
+                                        <Column id="_IDGenColumn1"><Text id="_IDGenText2" text="BUDGET AMOUNT (₹ Lacs.)" /></Column>
+                                        <Column id="_IDGenColumn2"><Text id="_IDGenText3" text="5% CONTINGENCY (₹ Lacs.)" /></Column>
+                                        <Column id="_IDGenColumn3"><Text id="_IDGenText4" text="TOTAL (₹ Lacs.)" /></Column>
+                                    </columns>
+                                    <items>
+                                        <ColumnListItem id="_IDGenColumnListItem">
+                                            <cells>
+                                                <Text id="_IDGenText5" text="{budgetModel>nature}" />
+                                                <Input id="_IDGenInput14"
+                                                    enabled="{viewenableddatacheck>/enableRowActions}"
+                                                    value="{budgetModel>amount}"
+                                                    type="Number"
+                                                    change="onBudgetAmountChange"
+                                                    editable="{= ${budgetModel>nature} !== 'Total' }" />
+                                                <Text id="_IDGenText6" text="{budgetModel>contingency}" />
+                                                <Text id="_IDGenText7" text="{budgetModel>total}" />
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+                            </VBox>
+                        </uxap:ObjectPageSubSection>
+                    </uxap:subSections>
+                </uxap:ObjectPageSection> -->
+
+                <!-- Approver Section -->
+
+                <!-- Attachment Section -->
+                <!-- <uxap:ObjectPageSection id="_IDGenObjectPageSection2" title="Attachment">
+                    <uxap:subSections>
+                        <uxap:ObjectPageSubSection id="_IDGenObjectPageSubSection2">
+                            <VBox id="_IDGenVBox64" class="sapUiSmallMargin" width="100%">
+                                <Table id="attachmentsTabl2e" items="{UploadDocSrvTabData>/attachments}">
+                                    <headerToolbar>
+                                        <OverflowToolbar id="_IDGenOverflowToolbar">
+                                            <Text id="_IDGenText8"
+                                                text="Attachments: {= ${UploadDocSrvTabData>/attachments}.length }"
+                                                class="sapUiTinyMarginEnd" />
+                                            <ToolbarSpacer id="_IDGenToolbarSpacer" />
+                                            <u:FileUploader id="fileUploader"
+                                                fileType="jpg,png,pdf,docx,jpeg,csv,xlsx,eml"
+                                                multiple="true"
+                                                icon="sap-icon://upload"
+                                                buttonText="Upload"
+                                                visible="{viewenableddatacheck>/enableRowActions}"
+                                                buttonOnly="true"
+                                                change="onUploadTabAttchmment"
+                                                class="sapUiSmallMarginEnd">
+                                                <u:customData>
+                                                    <core:CustomData key="parentType" value="Request" writeToDom="false" />
+                                                </u:customData>
+                                            </u:FileUploader>
+                                        </OverflowToolbar>
+                                    </headerToolbar>
+                                    <columns>
+                                        <Column id="_IDGenColumn4"><Text id="_IDGenText9" text="File Name" /></Column>
+                                        <Column id="_IDGenColumn5"><Text id="_IDGenText10" text="Uploaded Date" /></Column>
+                                        <Column id="_IDGenColumn6"><Text id="_IDGenText11" text="Uploaded By" /></Column>
+                                        <Column id="_IDGenColumn7" width="9rem"><Text id="_IDGenText12" class="sapUiMediumMarginBegin" text="Action" /></Column>
+                                    </columns>
+                                    <items>
+                                        <ColumnListItem id="_IDGenColumnListItem1">
+                                            <cells>
+                                                <Text id="_IDGenText13" text="{UploadDocSrvTabData>fileName}" />
+                                                <Text id="_IDGenText14" text="{UploadDocSrvTabData>uploadedOn}" />
+                                                <Text id="_IDGenText15" text="{UploadDocSrvTabData>uploadedBy}" />
+                                                <HBox id="_IDGenHBox3" width="100%">
+                                                    <Button id="_IDGenButton"
+                                                        icon="sap-icon://download"
+                                                        press="onDownloadTabAttachemnt"
+                                                        type="Default"
+                                                        class="sapUiSmallMarginEnd">
+                                                        <customData>
+                                                            <core:CustomData key="fileName" value="{UploadDocSrvTabData>fileName}" />
+                                                            <core:CustomData key="ID" value="{UploadDocSrvTabData>ID}" />
+                                                        </customData>
+                                                    </Button>
+                                                    <Button id="_IDGenButton1"
+                                                        icon="sap-icon://delete"
+                                                        class="sapUiMediumMarginEnd"
+                                                        press="onDeleteTabAttchment"
+                                                        type="Reject"
+                                                        enabled="{viewenableddatacheck>/enableRowActions}">
+                                                        <customData>
+                                                            <core:CustomData key="fileName" value="{UploadDocSrvTabData>fileName}" />
+                                                            <core:CustomData key="ID" value="{UploadDocSrvTabData>ID}" />
+                                                        </customData>
+                                                    </Button>
+                                                </HBox>
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+                            </VBox>
+                        </uxap:ObjectPageSubSection>
+                    </uxap:subSections>
+                </uxap:ObjectPageSection> -->
+
+                <!-- Approval History Section -->
+                <uxap:ObjectPageSection id="_IDGenObjectPageSection3" title="Approval History">
+                    <uxap:subSections>
+                        <uxap:ObjectPageSubSection id="_IDGenObjectPageSubSection3">
+                            <VBox id="_IDGenVBox7" class="sapUiSmallMargin">
+                                <suite:Timeline id="approvalTimeline2"
+                                    axisOrientation="Vertical"
+                                    showTimeFilter="false"
+                                    height="500px"
+                                    showItemFilter="false"
+                                    enableScroll="true"
+                                    content="{timelinesslogdata>/results}">
+                                    <suite:TimelineItem id="_IDGenTimelineItem"
+                                        dateTime="{
+                                            path: 'timelinesslogdata>createdAt',
+                                            type: 'sap.ui.model.type.Date',
+                                            formatOptions: {
+                                                style: 'medium',
+                                                strictParsing: true
+                                            }
+                                        }"
+                                        title="{
+                                            parts: [
+                                                'timelinesslogdata>role',
+                                                'timelinesslogdata>userName',
+                                                'timelinesslogdata>userEmail'
+                                            ],
+                                            formatter: '.formatTimelineTitle'
+                                        }"
+                                        text="{timelinesslogdata>remarks}"
+                                        userPicture="{timelinesslogdata>userPicture}"
+                                        icon="sap-icon://employee-approvals" />
+                                </suite:Timeline>
+                            </VBox>
+                        </uxap:ObjectPageSubSection>
+                    </uxap:subSections>
+                </uxap:ObjectPageSection>
+            </uxap:sections>
+        </uxap:ObjectPageLayout>
+    </Page>
+</mvc:View>
+
 UPDATED CODE 8
 
 <mvc:View
