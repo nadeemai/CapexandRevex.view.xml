@@ -841,7 +841,7 @@ sap.ui.define([
             });
         }
     });
-});
+}); 
 
 UPDATE CODE 10
 
