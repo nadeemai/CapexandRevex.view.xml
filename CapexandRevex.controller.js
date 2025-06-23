@@ -149,21 +149,18 @@ sap.ui.define([
                 // Make PO, WBS, TDS, GST, Payment Terms, and Total Amount editable for Regular Payment with PO Based
                 bPoEnabled = true;
                 bFieldsEnabled = true;
-            } else if (sPaymentOption === "Advance Payment" || sPaymentOption === "Regular Payment") {
-                // For both Advance Payment and Regular Payment (other than specific cases)
-                if (sPoNonPo === "po" && sPaymentOption === "Advance Payment") {
-                    // PO should be editable for Advance Payment with PO
-                    bPoEnabled = true;
-                    bFieldsEnabled = false; // WBS, TDS, GST, Payment Terms, Total Amount non-editable
-                } else if (sPoNonPo === "nonpo" && sPaymentOption === "Advance Payment") {
-                    // WBS, TDS, GST, Payment Terms, Total Amount should be non-editable
-                    bFieldsEnabled = false;
-                    bPoEnabled = false; // PO non-editable
+            } else if (sPaymentOption === "Advance Payment") {
+                // For Advance Payment, make WBS editable regardless of PO or Non-PO
+                bFieldsEnabled = true; // Enable WBS, but other fields (TDS, GST, etc.) remain non-editable
+                if (sPoNonPo === "po") {
+                    bPoEnabled = true; // PO editable for Advance Payment with PO
                 } else {
-                    // Default case for Regular Payment (non-PO) or other combinations
-                    bFieldsEnabled = false;
-                    bPoEnabled = false;
+                    bPoEnabled = false; // PO non-editable for Advance Payment with Non-PO
                 }
+            } else {
+                // Default case for other combinations
+                bFieldsEnabled = false;
+                bPoEnabled = false;
             }
 
             // Update field enablement model
