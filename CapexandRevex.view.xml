@@ -1,3 +1,309 @@
+UPDATED CODE 11
+
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:uxap="sap.uxap"
+    xmlns:u="sap.ui.unified"
+    xmlns:suite="sap.suite.ui.commons"
+    controllerName="com.capexrevex.capexravex.controller.capexrevex">
+
+    <Page id="sanctionFDPage" 
+          class="custom-scope" 
+          title="FD CAPEX AND REVEX" 
+          showNavButton="true" 
+          navButtonPress="onDashboardui">
+        <uxap:ObjectPageLayout id="sanctionFDObjectPageLayout" 
+                              showTitleInHeaderContent="true" 
+                              upperCaseAnchorBar="false" 
+                              showHeaderContent="true" 
+                              showFooter="true">
+            <uxap:headerTitle>
+                <uxap:ObjectPageDynamicHeaderTitle id="sanctionFDHeaderTitle">
+                    <uxap:actions>
+                        <HBox id="actionButtonsContainerr" class="customhead">
+                            <Button
+                                id="saveDraftBtn"
+                                text="Save As Draft"
+                                visible="{viewenableddatacheck>/enableRowActions}"
+                                type="Accept"
+                                press="onSaveCapexravexform"
+                                ariaLabelledBy="saveDraftBtnLabel"/>
+                            <Button
+                                id="submitBtn"
+                                text="{i18n>Submit}"
+                                visible="{viewenableddatacheck>/enableRowActions}"
+                                type="Emphasized"
+                                press="onSubmitCapexravexform"
+                                ariaLabelledBy="submitBtnLabel"/>
+                        </HBox>
+                    </uxap:actions>
+                </uxap:ObjectPageDynamicHeaderTitle>
+            </uxap:headerTitle>
+
+            <uxap:headerContent>
+                <VBox id="headerFormContainer">
+                    <form:SimpleForm
+                        id="PaymentDetailsForm"
+                        editable="true"
+                        layout="ColumnLayout"
+                        labelSpanXL="12"
+                        labelSpanL="12"
+                        labelSpanM="12"
+                        columnsXL="4"
+                        columnsL="4"
+                        columnsM="1"
+                        adjustLabelSpan="false"
+                        class="sapUiSmallMarginBeginEnd">
+                        <form:content>
+                                        <!-- ROW 1 with ComboBoxes (non-editable) -->
+                                        <Label id="lblBuyerRequestore" text="Buyer Requestor" required="true" />
+                                        <ComboBox id="cbBuyerRequestore"
+                                                  selectedKey="{portalModel>/buyerRequester}"
+                                                  placeholder="Select Buyer Requestor"
+                                                  
+                                                  width="100%">
+                                            <core:Item key="user1" text="User 1" />
+                                            <core:Item key="user2" text="User 2" />
+                                            <core:Item key="user3" text="User 3" />
+                                        </ComboBox>
+
+                                        <Label id="lblBuyerHOD3" text="Buyer HOD" required="true" />
+                                        <ComboBox id="cbBuyerHO3D"
+                                                  selectedKey="{portalModel>/buyerHod}"
+                                                  placeholder="Select Buyer HOD"
+                                                  
+                                                  width="100%">
+                                            <core:Item key="hod1" text="HOD 1" />
+                                            <core:Item key="hod2" text="HOD 2" />
+                                            <core:Item key="hod3" text="HOD 3" />
+                                        </ComboBox>
+                                    </form:content>
+                    </form:SimpleForm>
+                </VBox>
+            </uxap:headerContent>
+
+            <uxap:sections>
+                <!-- Approval Section -->
+                <uxap:ObjectPageSection id="approvalSection" title="Tab Container">
+                    <uxap:subSections>
+                        <uxap:ObjectPageSubSection id="approvalSubSection">
+                            <VBox id="approvalVBox" class="sapUiSmallMargin">
+                                <form:SimpleForm
+                                    id="ApproverDetailsForm"
+                                    editable="true"
+                                    layout="ColumnLayout"
+                                    labelSpanXL="12"
+                                    labelSpanL="12"
+                                    labelSpanM="12"
+                                    columnsXL="4"
+                                    columnsL="4"
+                                    columnsM="1"
+                                    adjustLabelSpan="false"
+                                    class="sapUiSmallMarginBeginEnd">
+                                    <form:content>
+    <!-- ROW 1 -->
+    <Label id="lblRequester2r" text="Requester Token/Name" />
+    <Input id="inpRequester2r" value="50002151 - PRIYATHAM TELAPROLU" editable="false" width="100%" />
+
+    <Label id="lblPaymentOptionen" text="Payment Option" required="true" />
+    <ComboBox id="cbPaymentOptieon"
+              selectedKey="{portalModel>/paymentOption}"
+              placeholder="Select Payment Option"
+              enabled="{fieldEnablement>/submitFieldsEnabled}"
+              change="onPaymentOptionChange">
+        <core:Item id="_IDGenIteme1" text="Advance Payment" key="Advance Payment" />
+        <core:Item id="_IDGenIteme2" text="Regular Payment" key="Regular Payment" />
+    </ComboBox>
+
+    <Label id="lblAccDocNumberer" text="Accounting Document Number" required="true" />
+    <Input id="inpAccDocNumberer"
+           value="{portalModel>/accountingDocNumber}"
+           placeholder="Enter Accounting Document Number"
+           enabled="{fieldEnablement>/submitFieldsEnabled}"
+           width="100%" />
+
+    <Label id="lblCostCenterer" text="Cost Center" required="true" />
+    <Input id="inpCostCenterer"
+           value="{portalModel>/costCenter}"
+           placeholder="Enter Cost Center"
+           enabled="{fieldEnablement>/submitFieldsEnabled}"
+           width="100%" />
+
+    <!-- ROW 2 -->
+    <Label id="lblGSeT" text="GST" />
+    <Input id="inpGSeT"
+           value="{portalModel>/gst}"
+           placeholder="Enter GST"
+           width="100%"
+           editable="{fieldEnablement>/fieldsEnabled}" />
+
+    <Label id="lblDepartmentte" text="Department" />
+    <Input id="inpDepartmentte" value="TEMP" editable="false" width="100%" />
+
+    <Label id="lblPaymentTypeee" text="Payment Type" required="true" />
+    <ComboBox id="cbPaymentTyepe"
+              selectedKey="{portalModel>/paymentType}"
+              placeholder="Select Payment Type"
+              enabled="{fieldEnablement>/submitFieldsEnabled}">
+        <core:Item id="_IDGeneItem3" text="Capex" key="Capex" />
+        <core:Item id="_IDGeneItem4" text="Revex" key="Revex" />
+    </ComboBox>
+
+    <Label id="lblPaymentDateee" text="Payment Date" required="true" />
+    <DatePicker id="dpPaymentDaete"
+                value="{portalModel>/paymentDate}"
+                displayFormat="dd-MM-yyyy"
+                valueFormat="yyyy-MM-dd"
+                placeholder="Select Payment Date"
+                enabled="{fieldEnablement>/submitFieldsEnabled}"
+                width="100%" />
+
+    <!-- ROW 3 -->
+    <Label id="lblWBSse" text="WBS" required="true" />
+<Input id="inpWBSes"
+       value="{portalModel>/wbs}"
+       placeholder="Enter WBS"
+       width="100%"
+       editable="{fieldEnablement>/wbsEnabled}" />
+
+    <Label id="lblTDSse" text="TDS" />
+    <Input id="inpTDSes"
+           value="{portalModel>/tds}"
+           placeholder="Enter TDS"
+           width="100%"
+           editable="{fieldEnablement>/fieldsEnabled}" />
+
+    <Label id="lblDateee" text="Date" />
+    <DatePicker id="dpDatee"
+                value="2023-08-02"
+                displayFormat="dd-MM-yyyy"
+                valueFormat="yyyy-MM-dd"
+                editable="false"
+                width="100%" />
+
+    <Label id="lblPoNonPoeo" text="PO/Non PO" required="true" />
+    <ComboBox id="cbPoNonePo"
+              selectedKey="{portalModel>/poNonPo}"
+              placeholder="Select PO Type"
+              enabled="{fieldEnablement>/submitFieldsEnabled}"
+              change="onPoNonPoChange">
+        <core:Item id="_IDGenIteme5" text="PO Based" key="po" />
+        <core:Item id="_IDGenIteme6" text="Non-PO" key="nonpo" />
+    </ComboBox>
+
+    <!-- ROW 4 -->
+    <Label id="lblVendorCodeee" text="Vendor Code" required="true" />
+    <Input id="inpVendorCodeee"
+           value="{portalModel>/vendorCode}"
+           placeholder="Enter Vendor Code"
+           enabled="{fieldEnablement>/submitFieldsEnabled}"
+           width="100%" />
+
+    <Label id="lblBaseAmouneta" text="Base Amount" required="true" />
+    <Input id="inpBaseAmouneta"
+           value="{portalModel>/baseAmount}"
+           type="Number"
+           placeholder="Enter Base Amount"
+           enabled="{fieldEnablement>/submitFieldsEnabled}"
+           width="100%" />
+
+    <Label id="lblTotalAmouneta" text="Total Amount" />
+    <Input id="inpTotalAmouneta"
+           value="{portalModel>/totalAmount}"
+           type="Number"
+           placeholder="Enter Total Amount"
+           width="100%"
+           editable="{fieldEnablement>/fieldsEnabled}" />
+
+    <!-- ROW 5 -->
+    <Label id="lblRequestNumberee" text="Request Number" />
+    <Input id="inpRequestNumberee"
+           value="{portalModel>/reqNo}"
+           editable="false"
+           width="100%" />
+
+    <Label id="lblPOeo" text="PO" />
+    <Input id="inpPOoe"
+           value="{portalModel>/po}"
+           placeholder="Enter PO"
+           width="100%"
+           editable="{fieldEnablement>/poEnabled}" />
+
+    <Label id="lblVendorNameee" text="Vendor Name" required="true" />
+    <Input id="inpVendorNameee"
+           value="{portalModel>/vendorName}"
+           placeholder="Enter Vendor Name"
+           enabled="{fieldEnablement>/submitFieldsEnabled}"
+           width="100%" />
+
+    <Label id="lblInvoiceee" text="{parts: [{path: 'portalModel>/paymentOption'}, {path: 'portalModel>/poNonPo'}], formatter: '.formatInvoiceLabel'}" required="true" />
+    <Input id="inpInvoiceee"
+           value="{portalModel>/invoiceNumber}"
+           placeholder="Enter Invoice/Proforma Number"
+           enabled="{fieldEnablement>/submitFieldsEnabled}"
+           width="100%" />
+
+    <Label id="lblPaymentTermsee" text="Payment Terms" />
+    <ComboBox id="cbPaymentTermes"
+              selectedKey="{portalModel>/paymentTerms}"
+              placeholder="Select Payment Terms"
+              editable="{fieldEnablement>/fieldsEnabled}"
+              width="100%">
+        <core:Item id="_IDGenIteme7" text="Term 1" key="term1" />
+        <core:Item id="_IDGenIteme8" text="Term 2" key="term2" />
+    </ComboBox>
+</form:content>
+                                </form:SimpleForm>
+                            </VBox>
+                        </uxap:ObjectPageSubSection>
+                    </uxap:subSections>
+                </uxap:ObjectPageSection>
+                <!-- Approval History Section -->
+                <uxap:ObjectPageSection id="approvalHistorySection6" title="Approval History">
+                    <uxap:subSections>
+                        <uxap:ObjectPageSubSection id="approvalHistorySubSection5">
+                            <VBox id="approvalHistoryVBoxr" class="sapUiSmallMargin">
+                                <suite:Timeline id="approvalTimeline4"
+                                                axisOrientation="Vertical"
+                                                showTimeFilter="false"
+                                                height="500px"
+                                                showItemFilter="false"
+                                                enableScroll="true"
+                                                content="{timelinesslogdata>/results}">
+                                    <suite:TimelineItem id="timelineItem4"
+                                                        dateTime="{
+                                                            path: 'timelinesslogdata>createdAt',
+                                                            type: 'sap.ui.model.type.Date',
+                                                            formatOptions: {
+                                                                style: 'medium',
+                                                                strictParsing: true
+                                                            }
+                                                        }"
+                                                        title="{
+                                                            parts: [
+                                                                'timelinesslogdata>role',
+                                                                'timelinesslogdata>userName',
+                                                                'timelinesslogdata>userEmail'
+                                                            ],
+                                                            formatter: '.formatTimelineTitle'
+                                                        }"
+                                                        text="{timelinesslogdata>remarks}"
+                                                        userPicture="{timelinesslogdata>userPicture}"
+                                                        icon="sap-icon://employee-approvals" />
+                                </suite:Timeline>
+                            </VBox>
+                        </uxap:ObjectPageSubSection>
+                    </uxap:subSections>
+                </uxap:ObjectPageSection>
+            </uxap:sections>
+        </uxap:ObjectPageLayout>
+    </Page>
+</mvc:View>
+
 UPDATE CODE 10
 
 <mvc:View
