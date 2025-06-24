@@ -112,6 +112,17 @@ sap.ui.define([
             oView.setModel(oUploadDocModel, "UploadDocSrvTabData");
 
             this._updateFieldEnablement();
+
+            // Attach live change event handlers for real-time validation
+            var aInputIds = ["cbPaymentOptieon", "cbPaymentTyepe", "cbPoNonePo", "dpPaymentDaete", "inpAccDocNumberer", "inpCostCenterer", 
+                            "inpWBSes", "inpVendorCodeee", "inpVendorNameee", "inpBaseAmouneta", "inpInvoiceee", "po", "gst", 
+                            "tds", "paymentTerms", "totalAmount"];
+            aInputIds.forEach(function(id) {
+                var oControl = oView.byId(id);
+                if (oControl && oControl.attachLiveChange) {
+                    oControl.attachLiveChange(this._handleLiveValidation.bind(this));
+                }
+            }.bind(this));
         },
 
         // Route matched handler
@@ -319,9 +330,9 @@ sap.ui.define([
             this._resetFieldStates();
 
             // Get payment option and PO/Non-PO selection
-            var sPaymentOption = this._getControlValue("paymentOption");
-            var sPoNonPo = this._getControlValue("poNonPo");
-            var bFieldsEnabled = this.getView().getModel("fieldEnablement").getProperty("/fieldsEnabled");
+            var sPaymentOption = oView.byId("cbPaymentOptieon").getSelectedKey();
+            var sPoNonPo = oView.byId("cbPoNonePo").getSelectedKey();
+            var bFieldsEnabled = oView.getModel("fieldEnablement").getProperty("/fieldsEnabled");
 
             // Required fields - these will always be mandatory
             var aMandatoryFields = [
@@ -343,14 +354,19 @@ sap.ui.define([
                 var oControl = oView.byId(item.id);
                 if (!oControl) return;
 
-                var sValue = oControl.getValue ? oControl.getValue().trim() : "";
+                var sValue = oControl.getValue ? oControl.getValue().trim() : oControl.getSelectedKey ? oControl.getSelectedKey().trim() : "";
                 
-                if (!sValue) {
+                if (item.id === "dpPaymentDaete" && !sValue) {
                     oControl.setValueState("Error");
                     oControl.setValueStateText("This field is mandatory");
                     isValid = false;
                     missingFields.push(item.field);
-                } else if (item.field === "Base Amount" && isNaN(parseFloat(sValue))) {
+                } else if (!sValue) {
+                    oControl.setValueState("Error");
+                    oControl.setValueStateText("This field is mandatory");
+                    isValid = false;
+                    missingFields.push(item.field);
+                } else if (item.id === "inpBaseAmouneta" && sValue && isNaN(parseFloat(sValue))) {
                     oControl.setValueState("Error");
                     oControl.setValueStateText("Must be a valid number");
                     isValid = false;
@@ -392,7 +408,7 @@ sap.ui.define([
                         oControl.setValueStateText("This field is mandatory for Regular Payment");
                         isValid = false;
                         missingFields.push(item.field);
-                    } else if (["GST", "TDS", "Total Amount"].includes(item.field) && isNaN(parseFloat(sValue))) {
+                    } else if (["gst", "tds", "totalAmount"].includes(item.id) && sValue && isNaN(parseFloat(sValue))) {
                         oControl.setValueState("Error");
                         oControl.setValueStateText("Must be a valid number");
                         isValid = false;
@@ -402,17 +418,17 @@ sap.ui.define([
             }
 
             // Final validation result
-            // if (!isValid) {
-            //     var errorMessage = "Please fill all required fields:\n" +
-            //         missingFields.map(field => "• " + field).join("\n");
+            if (!isValid) {
+                var errorMessage = "Please fill all required fields:\n" +
+                    missingFields.map(field => "• " + field).join("\n");
 
-            //     MessageBox.error(errorMessage, {
-            //         title: "Missing Required Fields",
-            //         details: "All fields marked with (*) are mandatory.",
-            //         actions: [MessageBox.Action.OK]
-            //     });
-            //     return;
-            // }
+                MessageBox.error(errorMessage, {
+                    title: "Missing Required Fields",
+                    // details: "All fields marked with (*) are mandatory.",
+                    actions: [MessageBox.Action.OK]
+                });
+                return;
+            }
 
             // Additional validation from _validateForm
             if (!this._validateForm()) {
@@ -441,9 +457,9 @@ sap.ui.define([
         _resetFieldStates: function() {
             var oView = this.getView();
             var aControlIds = [
-                "paymentOption", "paymentType", "poNonPo", "paymentDate",
-                "accountingDocNumber", "costCenter", "wbs", "vendorCode",
-                "vendorName", "baseAmount", "invoiceNumber", "po", "gst",
+                "cbPaymentOptieon", "cbPaymentTyepe", "cbPoNonePo", "dpPaymentDaete",
+                "inpAccDocNumberer", "inpCostCenterer", "inpWBSes", "inpVendorCodeee",
+                "inpVendorNameee", "inpBaseAmouneta", "inpInvoiceee", "po", "gst",
                 "tds", "paymentTerms", "totalAmount"
             ];
 
@@ -463,16 +479,57 @@ sap.ui.define([
             
             if (oControl.getValue) {
                 return oControl.getValue();
-            } else if (oControl.getSelectedItem) {
-                var oItem = oControl.getSelectedItem();
-                return oItem ? oItem.getText() : "";
+            } else if (oControl.getSelectedKey) {
+                return oControl.getSelectedKey();
             } else if (oControl.getDate) {
-                // For date controls
                 return oControl.getDate();
             }
             return "";
         },
-        
+
+        // Handle live validation for input fields
+        _handleLiveValidation: function(oEvent) {
+            var oControl = oEvent.getSource();
+            var sValue = oControl.getValue ? oControl.getValue().trim() : oControl.getSelectedKey ? oControl.getSelectedKey().trim() : "";
+            var sId = oControl.getId();
+            var bFieldsEnabled = this.getView().getModel("fieldEnablement").getProperty("/fieldsEnabled");
+
+            // Clear error state if field is filled with valid data
+            if (sId === "dpPaymentDaete" && sValue) {
+                oControl.setValueState("None");
+                oControl.setValueStateText("");
+            } else if (sValue && ["cbPaymentOptieon", "cbPaymentTyepe", "cbPoNonePo", "inpAccDocNumberer", "inpCostCenterer", 
+                                 "inpWBSes", "inpVendorCodeee", "inpVendorNameee", "inpInvoiceee"].includes(sId)) {
+                oControl.setValueState("None");
+                oControl.setValueStateText("");
+            } else if (sId === "inpBaseAmouneta" && sValue && !isNaN(parseFloat(sValue))) {
+                oControl.setValueState("None");
+                oControl.setValueStateText("");
+            } else if (["gst", "tds", "totalAmount"].includes(sId) && bFieldsEnabled && sValue && !isNaN(parseFloat(sValue))) {
+                oControl.setValueState("None");
+                oControl.setValueStateText("");
+            }
+
+            // Set error state for empty mandatory fields
+            if (sId === "dpPaymentDaete" && !sValue) {
+                oControl.setValueState("Error");
+                oControl.setValueStateText("This field is mandatory");
+            } else if (!sValue && ["cbPaymentOptieon", "cbPaymentTyepe", "cbPoNonePo", "inpAccDocNumberer", "inpCostCenterer", 
+                                  "inpWBSes", "inpVendorCodeee", "inpVendorNameee", "inpInvoiceee"].includes(sId)) {
+                oControl.setValueState("Error");
+                oControl.setValueStateText("This field is mandatory");
+            }
+
+            // Set error state for invalid data (random or non-numeric in numeric fields)
+            if (sId === "inpBaseAmouneta" && sValue && isNaN(parseFloat(sValue))) {
+                oControl.setValueState("Error");
+                oControl.setValueStateText("Must be a valid number");
+            }
+            if (["gst", "tds", "totalAmount"].includes(sId) && bFieldsEnabled && sValue && isNaN(parseFloat(sValue))) {
+                oControl.setValueState("Error");
+                oControl.setValueStateText("Must be a valid number");
+            }
+        },
 
         // Submit remarks and form
         onSubmitReamrksData: function () {
@@ -990,6 +1047,7 @@ sap.ui.define([
         }
     });
 });
+
 
 UPDATE CODE 14
 
