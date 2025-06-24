@@ -150,7 +150,7 @@ sap.ui.define([
             // Initialize all enablement flags
             var bFieldsEnabled = false; // Controls TDS, GST, Payment Terms, Total Amount
             var bPoEnabled = false;     // Controls PO field
-            var bWbsEnabled = false;    // Controls WBS field (new separate property)
+            var bWbsEnabled = true;    // Controls WBS field (new separate property)
         
             // Apply enablement rules based on payment option and PO/Non-PO selection
             if (sPaymentOption === "Advance Payment") {
@@ -347,6 +347,7 @@ sap.ui.define([
                 { id: "inpVendorNameee", field: "Vendor Name" },
                 { id: "inpBaseAmouneta", field: "Base Amount" },
                 { id: "inpInvoiceee", field: sPaymentOption === "Advance Payment" ? "Proforma Number" : "Invoice Number" }
+                
             ];
 
             // Validate mandatory fields
@@ -492,40 +493,34 @@ sap.ui.define([
             var oControl = oEvent.getSource();
             var sValue = oControl.getValue ? oControl.getValue().trim() : oControl.getSelectedKey ? oControl.getSelectedKey().trim() : "";
             var sId = oControl.getId();
-            var bFieldsEnabled = this.getView().getModel("fieldEnablement").getProperty("/fieldsEnabled");
 
-            // Clear error state if field is filled with valid data
+            // Clear error if field is filled with valid data
             if (sId === "dpPaymentDaete" && sValue) {
                 oControl.setValueState("None");
                 oControl.setValueStateText("");
             } else if (sValue && ["cbPaymentOptieon", "cbPaymentTyepe", "cbPoNonePo", "inpAccDocNumberer", "inpCostCenterer", 
-                                 "inpWBSes", "inpVendorCodeee", "inpVendorNameee", "inpInvoiceee"].includes(sId)) {
+                                 "inpWBSes", "inpVendorCodeee", "inpVendorNameee", "inpInvoiceee", "po"].includes(sId)) {
                 oControl.setValueState("None");
                 oControl.setValueStateText("");
             } else if (sId === "inpBaseAmouneta" && sValue && !isNaN(parseFloat(sValue))) {
                 oControl.setValueState("None");
                 oControl.setValueStateText("");
-            } else if (["gst", "tds", "totalAmount"].includes(sId) && bFieldsEnabled && sValue && !isNaN(parseFloat(sValue))) {
+            } else if (["gst", "tds", "totalAmount"].includes(sId) && sValue && !isNaN(parseFloat(sValue))) {
                 oControl.setValueState("None");
                 oControl.setValueStateText("");
             }
-
-            // Set error state for empty mandatory fields
-            if (sId === "dpPaymentDaete" && !sValue) {
+            // Show error for empty mandatory fields or invalid data
+            else if (sId === "dpPaymentDaete" && !sValue) {
                 oControl.setValueState("Error");
                 oControl.setValueStateText("This field is mandatory");
             } else if (!sValue && ["cbPaymentOptieon", "cbPaymentTyepe", "cbPoNonePo", "inpAccDocNumberer", "inpCostCenterer", 
                                   "inpWBSes", "inpVendorCodeee", "inpVendorNameee", "inpInvoiceee"].includes(sId)) {
                 oControl.setValueState("Error");
                 oControl.setValueStateText("This field is mandatory");
-            }
-
-            // Set error state for invalid data (random or non-numeric in numeric fields)
-            if (sId === "inpBaseAmouneta" && sValue && isNaN(parseFloat(sValue))) {
+            } else if (sId === "inpBaseAmouneta" && sValue && isNaN(parseFloat(sValue))) {
                 oControl.setValueState("Error");
                 oControl.setValueStateText("Must be a valid number");
-            }
-            if (["gst", "tds", "totalAmount"].includes(sId) && bFieldsEnabled && sValue && isNaN(parseFloat(sValue))) {
+            } else if (["gst", "tds", "totalAmount"].includes(sId) && sValue && isNaN(parseFloat(sValue))) {
                 oControl.setValueState("Error");
                 oControl.setValueStateText("Must be a valid number");
             }
