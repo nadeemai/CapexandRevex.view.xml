@@ -1,3 +1,303 @@
+UPDATED CODE 1
+
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "com.mmapprovalhub.approvalhub",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.17.5",
+      "toolsId": "860734e4-3cc7-4819-ad95-ecd2fac35d1c"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/approval-hub/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      },
+      "approvalservicev2": {
+        "uri": "/odata/v2/approval-hub/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "2.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "processrequest-create": {
+          "semanticObject": "processrequest",
+          "action": "create",
+          "title": "{{appTitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": false,
+    "dependencies": {
+      "minUI5Version": "1.136.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "com.mmapprovalhub.approvalhub.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "type": "sap.ui.model.odata.v4.ODataModel",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true,
+         "synchronizationMode": "None",
+          "groupId": "$direct"
+        }
+      },
+      "approvalservicev2": {
+        "type": "sap.ui.model.odata.v2.ODataModel",
+        "dataSource": "approvalservicev2",
+        "settings": {
+          "batch": false
+        }
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+          "routerClass": "sap.m.routing.Router",
+          "viewType": "XML",
+          "async": true,
+          "viewPath": "com.mmapprovalhub.approvalhub.view",
+          "path": "com.mmapprovalhub.approvalhub.view",
+          "controlAggregation": "pages",
+          "controlId": "app",
+          "clearControlAggregation": false,
+          "clearTarget": false
+      },
+      "routes": [
+          {
+            "name": "Cordys_DashboardUi",
+            "pattern": "Cordys_DashboardUi",
+            "target": "Cordys_DashboardUi"
+            
+        },
+          {
+              "name": "DashboardUI",
+              "pattern": "DashboardUI/{Name}",     
+              "target": "DashboardUI"
+          },
+          {
+            "name": "CapexandRevex",
+            "pattern": "CapexandRevex/{basedNameUI}",     
+            "target": "CapexandRevex"
+        },
+        {
+          "name": "adpd",
+          "pattern": "adpd/{basedNameUIadpd}",     
+          "target": "adpd"
+      },
+      {
+        "name": "Sanctionfd",
+        "pattern": "Sanctionfd/{basedNameUISSFD}",     
+        "target": "Sanctionfd"
+    },
+    {
+      "name": "SanctionfdRef",
+      "pattern": "Sanctionfd/{basedNameUISSFD}/{reqID}",     
+      "target": "Sanctionfd"
+  },
+  {
+    "name": "SanctionfdRefApproved",
+    "pattern": "Sanctionfd/{approved}/{basedNameUISSFD}/{reqID}",     
+    "target": "Sanctionfd"
+},
+{
+  "name": "adpdReqIDApproved",
+  "pattern": "adpd/{approved}/{basedNameUIadpd}/{reqID}",     
+  "target": "adpd"
+},
+{
+  "name": "adpdReqID",
+  "pattern": "adpd/{basedNameUIadpd}/{reqID}",     
+  "target": "adpd"
+},
+    {
+      "name": "approverdashboard",
+      "pattern": "approverdashboard",     
+      "target": "approverdashboard"
+  },
+  {
+    "name": "NewBudgetRequestForm",
+    "pattern": "NewBudgetRequestForm/{formType}",
+    "target": "NewBudgetRequestForm"
+  },
+  {
+    "name": "NewBudgetRequestFormRef",
+    "pattern": "NewBudgetRequestForm/{basedNameUINBRF}/{reqID}",
+    "target": "NewBudgetRequestForm"
+  },
+  {
+    "name": "NewBudgetRequestFormRefApproved",
+    "pattern": "NewBudgetRequestForm/{approved}/{basedNameUINBRF}/{reqID}",
+    "target": "NewBudgetRequestForm"
+  },
+  {
+    "name": "ISRForm",
+    "pattern": "ISRForm/{type}",
+    "target": "ISRForm"
+  },
+  {
+    "name": "ISRFormRef",
+    "pattern": "ISRForm/{type}/{reqID}",     
+    "target": "ISRForm"
+  },
+  {
+  "name": "ISRFormRefApproved",
+  "pattern": "ISRForm/{approved}/{type}/{reqID}",     
+  "target": "ISRForm"
+  },
+  {
+    "name": "CostApproval",
+    "pattern": "CostApproval/{basedNameUICap}",     
+    "target": "CostApproval"
+},
+{
+  "name": "CostApprovalReqID",
+  "pattern": "CostApproval/{basedNameUICap}/{reqID}",     
+  "target": "CostApproval"
+},
+{
+  "name": "CostApprovalReqIDApprover",
+  "pattern": "CostApproval/{approved}/{basedNameUICap}/{reqID}",     
+  "target": "CostApproval"
+},
+{
+  "name": "CAPEX_AND_REVEX",
+  "pattern": "CAPEX_AND_REVEX/{basedNameUICap}",
+  "target": "CAPEX_AND_REVEX"
+},
+{
+  "name": "CAPEX_AND_REVEXReqID",
+  "pattern": "CAPEX_AND_REVEX/{basedNameUICap}/{reqID}",
+  "target": "CAPEX_AND_REVEX"
+},
+{
+  "name": "CAPEX_AND_REVEXReqIDApprover",
+  "pattern": "CAPEX_AND_REVEX/{approved}/{basedNameUICap}/{reqID}",
+  "target": "CAPEX_AND_REVEX"
+}
+  
+        
+          
+      ],
+      "targets": {
+          "Cordys_DashboardUi": {
+              "viewName": "Cordys_DashboardUi",
+              "viewLevel": 0
+          },
+          "DashboardUI": {
+              "viewName": "DashboardUI",
+              "viewLevel": 1
+          },
+          "CapexandRevex": {
+            "viewName": "CapexandRevex",
+            "viewLevel": 2
+        },
+        "adpd": {
+            "viewName": "adpd",
+            "viewLevel": 3
+        },
+        "Sanctionfd": {
+            "viewName": "Sanctionfd",
+            "viewLevel": 4
+        },
+        "approverdashboard": {
+          "viewName": "approverdashboard",
+          "viewLevel": 5
+      },
+      "NewBudgetRequestForm": {
+        "viewName": "NewBudgetRequestForm",
+        "viewLevel": 6
+    },
+    "ISRForm": {
+        "viewName": "Infra",
+        "viewLevel": 8
+      },
+      "CostApproval": {
+        "viewName": "CostApproval",
+        "viewLevel": 7
+    },
+    "CAPEX_AND_REVEX": {
+  "viewName": "CAPEX_AND_REVEX",
+  "viewLevel": 9
+}
+      }
+      
+},
+    "rootView": {
+      "viewName": "com.mmapprovalhub.approvalhub.view.App",
+      "type": "XML",
+      "id": "App",
+      "async": true
+    }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "com.approvalrouter"}
+}
+
+
+
 {
   "_version": "1.65.0",
   "sap.app": {
