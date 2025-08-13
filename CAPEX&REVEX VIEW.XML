@@ -1,0 +1,303 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc"
+          xmlns="sap.m"
+          xmlns:core="sap.ui.core"
+          xmlns:layout="sap.ui.layout"
+          xmlns:form="sap.ui.layout.form"
+          xmlns:uxap="sap.uxap"
+          xmlns:u="sap.ui.unified"
+          xmlns:suite="sap.suite.ui.commons"
+          controllerName="com.mmapprovalhub.approvalhub.controller.CAPEX_AND_REVEX">
+
+  <Page id="sanctionFDPage" class="custom-scope" title="FD CAPEX AND REVEX" showNavButton="true" navButtonPress="onDashboardui">
+    <uxap:ObjectPageLayout id="sanctionFDObjectPageLayout" showTitleInHeaderContent="true" upperCaseAnchorBar="false" showHeaderContent="true" showFooter="true">
+
+      <uxap:headerTitle>
+        <uxap:ObjectPageDynamicHeaderTitle id="sanctionFDHeaderTitle">
+          <uxap:heading>
+            <VBox>
+              <!-- <Title text="Request Number:" class="request-number-label"/> -->
+               <Text id="RequestNumberID" class="textfont" text="Request Number : {Requestservicemodel>/refNo}"  />
+              <!-- <Text text="{Requestservicemodel>/refNo}" class="reference-number-value"/> -->
+            </VBox>
+          </uxap:heading>
+          <uxap:actions>
+            <HBox>
+              <!-- <Text text="Cap Number : {RequestDataModel>/refNo}" width="100%"/> -->
+            </HBox>
+            <HBox>
+              <Button  id="SaveCapexravexForm" text="{i18n>saveAsDraftButton}" visible="{viewenableddatacheck>/enableRowActions}" type="Accept" press="onSaveCapexravexform"/>
+              <Button  id="SubmitCapexravexForm" text="{i18n>submitButton}" visible="{viewenableddatacheck>/enableRowActions}" type="Emphasized" press="onSubmitCapexravexform"/>
+              <Button  id="BackCapexravexForm" text="{i18n>btnCancel}" visible="{viewenableddatacheck>/enableRowActions}" type="Default" press="onCancelCapexRevexForm"/>
+
+                               <Button
+                                    id="ApprovedCapexravexForm"
+                                    text="Approve"
+                                    type="Accept"
+                                    press="onApprovedCapexravexForm" 
+                                    visible="false" />
+
+                                <Button
+                                    id="SendbackCapexravexForm"
+                                    text="Send Back"
+                                    type="Reject"
+                                    press="onSendbackCapexravexForm" 
+                                     visible="false" />
+
+            </HBox>
+          </uxap:actions>
+        </uxap:ObjectPageDynamicHeaderTitle>
+      </uxap:headerTitle>
+
+      <uxap:headerContent>
+        <VBox>
+          <form:SimpleForm editable="true" layout="ColumnLayout" labelSpanXL="12" labelSpanL="12" labelSpanM="12" columnsXL="2" columnsL="2" columnsM="1">
+            <form:content>
+              <Label text="Buyer Requestor" required="true"/>
+              <ComboBox id="buyerRequestorInput" selectedKey="{Requestservicemodel>/ipmDtl/buyerRequester}" placeholder="Select Buyer Requestor" width="100%" items="{buyerRequestorModel>/results}">
+                <core:Item key="{buyerRequestorModel>userID}" text="{buyerRequestorModel>userID} - {buyerRequestorModel>name}"/>
+              </ComboBox>
+
+              <Label text="Buyer HOD" required="true"/>
+              <ComboBox id="buyerHodInput" selectedKey="{Requestservicemodel>/ipmDtl/buyerHOD}" placeholder="Select Buyer HOD" width="100%" items="{buyerHODModel>/results}">
+                <core:Item key="{buyerHODModel>userID}" text="{buyerHODModel>userID} - {buyerHODModel>name}"/>
+              </ComboBox>
+            </form:content>
+          </form:SimpleForm>
+        </VBox>
+      </uxap:headerContent>
+
+      <uxap:sections>
+        <uxap:ObjectPageSection title="Cost Detail">
+          <uxap:subSections>
+            <uxap:ObjectPageSubSection>
+              <VBox>
+                <form:SimpleForm editable="true" layout="ColumnLayout" labelSpanXL="12" labelSpanL="12" labelSpanM="12" columnsXL="4" columnsL="4" columnsM="1">
+                  <form:content>
+                    <Label text="Requester Token/Name"/>
+                    <!-- <Input id="requesterTokenInput" value="50002151 - PRIYATHAM TELAPROLU" editable="false"/> -->
+                    <Input id="requesterTokenInput"
+                        value="{parts: [{path: 'CurrentUser>/userID'}, {path: 'CurrentUser>/name'}], 
+                                formatter: '.formatUserDisplay'}"
+                        editable="false" />
+
+                    <Label text="Payment Option" required="true"/>
+                    <ComboBox id="paymentOptionDropdown" selectedKey="{Requestservicemodel>/ipmDtl/paymentOption}" placeholder="Select Payment Option" enabled="{fieldEnablement>/submitFieldsEnabled}" selectionChange="onPaymentDetailsChange" change="" items="{paymentOptionModel>/results}">
+                      <core:Item key="{paymentOptionModel>description}" text="{paymentOptionModel>description}"/>
+                    </ComboBox>
+
+                    <!-- <Label text="Accounting Document Number" required="true"/>
+                    <Input id="accountingDocInput" value="{Requestservicemodel>/ipmDtl/accDocNo}" placeholder="Enter Accounting Document Number" type="Number" enabled="{fieldEnablement>/submitFieldsEnabled}"/>
+
+                    <Label text="Cost Center" required="true"/>
+                    <Input id="costcenterInput" value="{Requestservicemodel>/ipmDtl/costCenter}" placeholder="Enter Cost Center" enabled="{fieldEnablement>/submitFieldsEnabled}" />
+
+                    <Label text="GST"/>
+                    <Input id="gstInput" value="{Requestservicemodel>/ipmDtl/GST}" placeholder="Enter GST" editable="{fieldEnablement>/fieldsEnabled}"/> -->
+
+<Label text="Accounting Document Number" required="true"/>
+<Input id="accountingDocInput"
+       value="{Requestservicemodel>/ipmDtl/accDocNo}"
+       placeholder="Enter Accounting Document Number"
+       type="Number"
+       maxLength="20"
+       enabled="{fieldEnablement>/submitFieldsEnabled}" />
+
+<Label text="Cost Center" required="true"/>
+<Input id="costcenterInput"
+       value="{Requestservicemodel>/ipmDtl/costCenter}"
+       placeholder="Enter Cost Center"
+       maxLength="20"
+       enabled="{fieldEnablement>/submitFieldsEnabled}"
+       liveChange=".onAlphaNumericInput" />
+
+<Label text="GST"/>
+<Input id="gstInput"
+       value="{Requestservicemodel>/ipmDtl/GST}"
+       placeholder="Enter GST"
+       
+       maxLength="30"
+       editable="{fieldEnablement>/fieldsEnabled}" />
+
+       
+                    <Label text="Department"/>
+                    <!-- <Input id="departmentInput" value="TEMP" editable="false"/> -->
+                    <Input id="departmentInput"
+                          value="{parts: [{path: 'CurrentUser>/department'}], 
+                                  formatter: '.formatDepartmentDisplay'}"  
+                          editable="false" />
+
+                    <!-- <Label text="Payment Type" required="true"/>
+                    <ComboBox id="paymentTypeDropdown" selectedKey="{Requestservicemodel>/ipmDtl/paymentType}" placeholder="Select Payment Type" enabled="{fieldEnablement>/submitFieldsEnabled}" items="{paymentTypeModel>/results}">
+                      <core:Item key="{paymentTypeModel>description}" text="{paymentTypeModel>description}"/>
+                    </ComboBox>
+
+                    <Label text="Payment Date" required="true"/>
+                    <DatePicker id="paymentDateInput" value="{path: 'Requestservicemodel>/ipmDtl/paymentDt', formatter: '.formatDatePaymentDt'}"
+                     displayFormat="dd-MM-yyyy" valueFormat="yyyy-MM-dd" placeholder="Select Payment Date" enabled="{fieldEnablement>/submitFieldsEnabled}"/>
+
+                    <Label text="WBS" required="true"/>
+                    <Input id="WbsInput" value="{Requestservicemodel>/ipmDtl/WBS}" placeholder="Enter WBS" editable="{fieldEnablement>/wbsEnabled}"/>
+
+                    <Label text="TDS"/>
+                    <Input id="tdsInput" value="{Requestservicemodel>/ipmDtl/TDS}" placeholder="Enter TDS" editable="{fieldEnablement>/fieldsEnabled}"/> -->
+
+
+<Label text="Payment Type" required="true"/>
+<ComboBox id="paymentTypeDropdown"
+          selectedKey="{Requestservicemodel>/ipmDtl/paymentType}"
+          placeholder="Select Payment Type"
+          enabled="{fieldEnablement>/submitFieldsEnabled}"
+          items="{paymentTypeModel>/results}">
+  <core:Item key="{paymentTypeModel>description}" text="{paymentTypeModel>description}" />
+</ComboBox>
+
+<Label text="Payment Date" required="true"/>
+<DatePicker id="paymentDateInput"
+            value="{path: 'Requestservicemodel>/ipmDtl/paymentDt', formatter: '.formatDatePaymentDt'}"
+            displayFormat="dd-MM-yyyy"
+            valueFormat="yyyy-MM-dd"
+            placeholder="Select Payment Date"
+            enabled="{fieldEnablement>/submitFieldsEnabled}" />
+
+<Label text="WBS" required="true"/>
+<Input id="WbsInput"
+       value="{Requestservicemodel>/ipmDtl/WBS}"
+       placeholder="Enter WBS"
+       maxLength="30"
+       editable="{fieldEnablement>/wbsEnabled}"
+       liveChange=".onAlphaNumericInput" />
+
+<Label text="TDS"/>
+<Input id="tdsInput"
+       value="{Requestservicemodel>/ipmDtl/TDS}"
+       placeholder="Enter TDS"
+       
+       maxLength="20"
+       editable="{fieldEnablement>/fieldsEnabled}" />
+
+                    <Label text="Date"/>
+                    <!-- <DatePicker id="dateInput" value="2023-08-02" displayFormat="dd-MM-yyyy" valueFormat="yyyy-MM-dd" editable="false"/> -->
+                    <DatePicker 
+                        id="dateInput"
+                        value="{viewModel>/currentDate}" 
+                        displayFormat="dd-MM-yyyy" 
+                        valueFormat="yyyy-MM-dd"
+                        editable="false"/>
+
+                    <Label text="PO/Non PO" required="true"/>
+                    <ComboBox id="poNonPODropdown" selectedKey="{Requestservicemodel>/ipmDtl/poNonPo}" placeholder="Select PO Type" enabled="{fieldEnablement>/submitFieldsEnabled}" selectionChange="onPaymentDetailsChange" change="" items="{poNonPOModel>/results}">
+                      <core:Item key="{poNonPOModel>description}" text="{poNonPOModel>description}"/>
+                    </ComboBox>
+<!-- 
+                    <Label text="Vendor Code" required="true"/>
+                    <Input id="vendorCodeInput" value="{Requestservicemodel>/ipmDtl/vendorCode}" placeholder="Enter Vendor Code" enabled="{fieldEnablement>/submitFieldsEnabled}"/>
+
+                    <Label text="Base Amount" required="true"/>
+                    <Input id="baseAmountInput" value="{Requestservicemodel>/ipmDtl/baseAmount}" type="Number" placeholder="Enter Base Amount" enabled="{fieldEnablement>/submitFieldsEnabled}"/>
+
+                    <Label text="Total Amount"/>
+                    <Input id="totalAmountInput" value="{Requestservicemodel>/ipmDtl/totalAmount}" type="Number" placeholder="Enter Total Amount" editable="{fieldEnablement>/fieldsEnabled}"/> -->
+
+<!-- <Label text="PO/Non PO" required="true"/>
+<ComboBox id="poNonPODropdown"
+          selectedKey="{Requestservicemodel>/ipmDtl/poNonPo}"
+          placeholder="Select PO Type"
+          enabled="{fieldEnablement>/submitFieldsEnabled}"
+          selectionChange="onPaymentDetailsChange"
+          items="{poNonPOModel>/results}">
+  <core:Item key="{poNonPOModel>description}" text="{poNonPOModel>description}" />
+</ComboBox> -->
+
+<Label text="Vendor Code" required="true"/>
+<Input id="vendorCodeInput"
+       value="{Requestservicemodel>/ipmDtl/vendorCode}"
+       placeholder="Enter Vendor Code"
+       maxLength="30"
+       enabled="{fieldEnablement>/submitFieldsEnabled}"
+       liveChange=".onAlphaNumericInput" />
+
+<Label text="Base Amount" required="true"/>
+<Input id="baseAmountInput"
+       value="{Requestservicemodel>/ipmDtl/baseAmount}"
+       type="Number"
+       maxLength="12"
+       placeholder="Enter Base Amount"
+       enabled="{fieldEnablement>/submitFieldsEnabled}" />
+
+<Label text="Total Amount"/>
+<Input id="totalAmountInput"
+       value="{Requestservicemodel>/ipmDtl/totalAmount}"
+       type="Number"
+       maxLength="12"
+       placeholder="Enter Total Amount"
+       editable="{fieldEnablement>/fieldsEnabled}" />
+
+                    <Label text="Request Number"/>
+                    <Input id="requestNumberInput" value="{Requestservicemodel>/refNo}" editable="false"/>
+
+                    <!-- <Label text="PO"/>
+                    <Input id="poInput" value="{Requestservicemodel>/ipmDtl/PO}" placeholder="Enter PO" editable="{fieldEnablement>/poEnabled}"/>
+
+                    <Label text="Vendor Name" required="true"/>
+                    <Input id="vendorNameInput" value="{Requestservicemodel>/ipmDtl/vendorName}" placeholder="Enter Vendor Name" enabled="{fieldEnablement>/submitFieldsEnabled}"/>
+
+                    <Label text="Invoice/Proforma Number" required="true"/>
+                    <Input id="invoiceNumberInput" value="{Requestservicemodel>/ipmDtl/invoiceNumber}" placeholder="Enter Invoice/Proforma Number" enabled="{fieldEnablement>/submitFieldsEnabled}"/> -->
+
+<Label text="PO"/>
+<Input id="poInput"
+       value="{Requestservicemodel>/ipmDtl/PO}"
+       placeholder="Enter PO"
+       maxLength="30"
+       editable="{fieldEnablement>/poEnabled}"
+       liveChange=".onAlphaNumericInput" />
+
+<Label text="Vendor Name" required="true"/>
+<Input id="vendorNameInput"
+       value="{Requestservicemodel>/ipmDtl/vendorName}"
+       placeholder="Enter Vendor Name"
+       maxLength="100"
+       enabled="{fieldEnablement>/submitFieldsEnabled}" />
+
+<Label text="Invoice/Proforma Number" required="true"/>
+<Input id="invoiceNumberInput"
+       value="{Requestservicemodel>/ipmDtl/invoiceNumber}"
+       placeholder="Enter Invoice/Proforma Number"
+       maxLength="30"
+       enabled="{fieldEnablement>/submitFieldsEnabled}"
+       liveChange=".onSpecialCharAllowedInput" />
+
+                    <Label text="Payment Terms"/>
+                    <ComboBox id="paymentTermsDropdown" selectedKey="{Requestservicemodel>/ipmDtl/paymentTerms}" placeholder="Select Payment Terms" editable="{fieldEnablement>/fieldsEnabled}" items="{paymentTermsModel>/results}">
+                      <core:Item key="{paymentTermsModel>description}" text="{paymentTermsModel>description}"/>
+                    </ComboBox>
+                  </form:content>
+                </form:SimpleForm>
+              </VBox>
+            </uxap:ObjectPageSubSection>
+          </uxap:subSections>
+        </uxap:ObjectPageSection>
+
+        <uxap:ObjectPageSection title="Approval History">
+          <uxap:subSections>
+            <uxap:ObjectPageSubSection>
+              <VBox>
+                <suite:Timeline axisOrientation="Vertical" height="500px" content="{timelinesslogdata>/results}">
+                  <suite:TimelineItem 
+                  dateTime="{
+                            parts: ['timelinesslogdata>createdAt', 'timelinesslogdata>remarks'],
+                            formatter: '.formatDateTimeWithRemarks'
+                        }"
+                    title="{ parts: ['timelinesslogdata>role', 'timelinesslogdata>userName', 'timelinesslogdata>userEmail'], formatter: '.formatTimelineTitle' }"
+                    text="{timelinesslogdata>remarks}" 
+                    icon="sap-icon://employee-approvals"/>
+                </suite:Timeline>
+              </VBox>
+            </uxap:ObjectPageSubSection>
+          </uxap:subSections>
+        </uxap:ObjectPageSection>
+      </uxap:sections>
+    </uxap:ObjectPageLayout>
+  </Page>
+</mvc:View>
+
